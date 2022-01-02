@@ -13,7 +13,7 @@ const drawSineWave = (p, width, height, modifier) => {
         }
 
         p.stroke(`rgba(0, 0, 0, ${((1 / 450) * (width - x1[i] / 2)) / 5})`);
-        const amplitude = (i / 10) * (modifier / 20);
+        const amplitude = (i / 10) * (modifier / 60);
 
         x2[i] = x1[i] + 1;
         y2[i] = amplitude * p.sin(i / 10) + y0[i];
@@ -26,12 +26,14 @@ const drawSineWave = (p, width, height, modifier) => {
 };
 
 export const sineWave = (p) => {
-    let { width, height, ...args } = p.getURLParams();
-    width = width ?? 736 ;
-    height = height ?? 450;
+    let { canvasW, canvasH, backgroundColor, ...params } = p.getURLParams();
+    let width = canvasW ?? 736;
+    let height = canvasH ?? 450;
 
+    console.log(backgroundColor)
     p.setup = () => {
         p.createCanvas(width, height);
+        p.background("#" + backgroundColor ?? "FFF")
 
         p.angleMode(p.RADIANS);
         p.noLoop();
@@ -45,10 +47,8 @@ export const sineWave = (p) => {
 
     p.draw = () => {
         // draw 50 sinusoidal waves
-        console.log(height);
-        console.log(width);
-        for (let i = 1; i < 50; i++) {
-            drawSineWave(p, width, height, i);
+        for (let modifier = 1; modifier < 50; modifier++) {
+            drawSineWave(p, width, height, modifier);
         }
     };
 };
