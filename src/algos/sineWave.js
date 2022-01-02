@@ -24,16 +24,16 @@ const drawSineWave = (p, width, height, modifier) => {
         y1[i] = y2[i];
     }
 };
+//TODO: Export params
 
 export const sineWave = (p) => {
-    let { canvasW, canvasH, backgroundColor, ...params } = p.getURLParams();
+    let { canvasW, canvasH, canvasBackgroundColor, ...params } = p.getURLParams();
     let width = canvasW ?? 736;
     let height = canvasH ?? 450;
 
-    console.log(backgroundColor)
     p.setup = () => {
         p.createCanvas(width, height);
-        p.background("#" + backgroundColor ?? "FFF")
+        p.background("#" + canvasBackgroundColor ?? "FFF")
 
         p.angleMode(p.RADIANS);
         p.noLoop();
