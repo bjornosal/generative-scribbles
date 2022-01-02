@@ -17,10 +17,12 @@ export default {
     },
     plugins: [
         !production &&
-            livereload(),
+            livereload({
+                delay: 100,
+            }),
         htmlTemplate({
             template: "src/template.html",
-            target: "index.html",
+            target: "dist/index.html",
         }),
         resolve(), // tells Rollup how to find stuff in node_modules
         commonjs(), // converts date-fns to ES modules
