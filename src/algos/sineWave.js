@@ -33,7 +33,6 @@ export const sineWave = (p) => {
     let height = canvasH ?? 400;
 
     p.setup = () => {
-        console.log(palette?.background);
         p.createCanvas(width, height);
         p.background("" + palette.background ?? "#FFF");
 
