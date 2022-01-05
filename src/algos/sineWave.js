@@ -1,3 +1,5 @@
+import { getGlobalParameters } from "../parameters";
+
 var y0, x1, y1, x2, y2;
 
 const drawSineWave = (p, width, height, modifier) => {
@@ -24,16 +26,16 @@ const drawSineWave = (p, width, height, modifier) => {
         y1[i] = y2[i];
     }
 };
-//TODO: Export params
 
 export const sineWave = (p) => {
-    let { canvasW, canvasH, canvasBackgroundColor, ...params } = p.getURLParams();
-    let width = canvasW ?? 736;
-    let height = canvasH ?? 450;
+    let { canvasW, canvasH, palette, ...params } = getGlobalParameters();
+    let width = canvasW ?? 640;
+    let height = canvasH ?? 400;
 
     p.setup = () => {
+        console.log(palette?.background);
         p.createCanvas(width, height);
-        p.background("#" + canvasBackgroundColor ?? "FFF")
+        p.background("" + palette.background ?? "#FFF");
 
         p.angleMode(p.RADIANS);
         p.noLoop();
