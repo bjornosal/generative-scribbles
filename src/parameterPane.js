@@ -22,7 +22,6 @@ export default () => {
         return map;
     }, {});
 
-    //TODO: Legg til algoritmer som et parametervalg.
     //TODO: Hent ut ekstra parametre per algoritme.
     //TODO: Oppdater Tweakpane-verdiene når de endres???
     standardParamsPane.addInput(params, "algo", {
@@ -38,11 +37,23 @@ export default () => {
         window.location.reload();
     });
 
+    const savingPane = pane.addFolder({ title: "Saving shit" });
+    const saveButton = savingPane.addButton({ title: "Save" });
+    saveButton.on("click", () => {
+        drawing.saveCanvas("fagkveld", "jpg");
+    });
+
+    const freezeButton = savingPane.addButton({
+        title: "Freeze/Thaw",
+    });
+    freezeButton.on("click", () => {
+        drawing.isLooping() ? drawing.noLoop() : drawing.loop();
+    });
+
     pane.on("change", (_) => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
         const currentPreset = pane.exportPreset();
-        console.log(currentPreset.algo);
         drawing.remove();
         drawing = new p5(currentPreset.algo);
     });
