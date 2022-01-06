@@ -5,7 +5,7 @@ const globalParameters = {
     algo: "",
     // START TORUS
     torusAmount: 1,
-    randomStartpunkt: false,
+    randomStartingPoint: false,
     // END TORUS
 };
 

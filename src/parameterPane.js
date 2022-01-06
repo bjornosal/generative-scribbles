@@ -36,10 +36,12 @@ export default () => {
     torusFolder.addInput(params, "torusAmount", {
         label: "Torus torus torus",
         step: 1,
-        min: 0,
+        min: 1,
         max: 25,
     });
-    torusFolder.addInput(params, "randomStartpunkt", { label: "Torus random" });
+    torusFolder.addInput(params, "randomStartingPoint", {
+        label: "Torus random",
+    });
 
     const resetButton = pane.addButton({ title: "Reload" });
     resetButton.on("click", () => {
