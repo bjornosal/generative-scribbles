@@ -4,8 +4,9 @@ import { getGlobalParameters } from "./parameters";
 import { sineWave } from "./algos/sineWave.js";
 import { fagkveldSketch } from "./algos/fagkveldSketch.js";
 import p5 from "p5";
+import algos from "./algos";
 
-let drawing = new p5(sineWave);
+let drawing = new p5(fagkveldSketch);
 
 export default () => {
     let params = getGlobalParameters();
@@ -24,6 +25,10 @@ export default () => {
     //TODO: Legg til algoritmer som et parametervalg.
     //TODO: Hent ut ekstra parametre per algoritme.
     //TODO: Oppdater Tweakpane-verdiene når de endres???
+    standardParamsPane.addInput(params, "algo", {
+        label: "Drawing",
+        options: algos,
+    });
     standardParamsPane.addInput(params, "canvasW", { label: "Canvas width" });
     standardParamsPane.addInput(params, "canvasH", { label: "Canvas height" });
     standardParamsPane.addInput(params, "palette", { options: palettes });
@@ -36,7 +41,9 @@ export default () => {
     pane.on("change", (_) => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
+        const currentPreset = pane.exportPreset();
+        console.log(currentPreset.algo);
         drawing.remove();
-        drawing = new p5(sineWave);
+        drawing = new p5(currentPreset.algo);
     });
 };
