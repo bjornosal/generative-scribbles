@@ -32,20 +32,30 @@ export default () => {
     standardParamsPane.addInput(params, "canvasH", { label: "Canvas height" });
     standardParamsPane.addInput(params, "palette", { options: palettes });
 
+    const torusFolder = pane.addFolder({ title: "Torus" });
+    torusFolder.addInput(params, "torusAmount", {
+        label: "Torus torus torus",
+        step: 1,
+        min: 0,
+        max: 25,
+    });
+    torusFolder.addInput(params, "randomStartpunkt", { label: "Torus random" });
+
     const resetButton = pane.addButton({ title: "Reload" });
     resetButton.on("click", () => {
         window.location.reload();
     });
 
-    const savingPane = pane.addFolder({ title: "Saving shit" });
-    const saveButton = savingPane.addButton({ title: "Save" });
+    const savingFolder = pane.addFolder({ title: "Saving shit" });
+    const saveButton = savingFolder.addButton({ title: "Save" });
     saveButton.on("click", () => {
         drawing.saveCanvas("fagkveld", "jpg");
     });
 
-    const freezeButton = savingPane.addButton({
+    const freezeButton = savingFolder.addButton({
         title: "Freeze/Thaw",
     });
+
     freezeButton.on("click", () => {
         drawing.isLooping() ? drawing.noLoop() : drawing.loop();
     });
