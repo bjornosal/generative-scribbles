@@ -1,22 +1,20 @@
 import { getGlobalParameters } from "../parameters";
 
-const generateRandomStartingPoints = (amount, width, height, p) => {
-    const startingPoints = [];
-
-    for (let i = 0; i < amount; i++) {
-        let randomX = p.random(-width / 3, width / 3);
-        let randomY = p.random(-height / 3, height / 3);
-
-        let x = parseInt(randomX);
-        let y = parseInt(randomY);
-
-        startingPoints.push({ x, y });
-    }
-
-    return startingPoints;
+const addParametersToPane = (pane, params) => {
+    const torusFolder = pane.addFolder({ title: "Torus" });
+    torusFolder.addInput(params, "torusAmount", {
+        label: "Torus torus torus",
+        step: 1,
+        min: 1,
+        max: 25,
+    });
+    torusFolder.addInput(params, "randomStartingPoint", {
+        label: "Torus random",
+    });
 };
+const name = "Fagkveld"
 
-export const fagkveldSketch = (p) => {
+const sketch = (p) => {
     let {
         canvasW,
         canvasH,
@@ -24,6 +22,7 @@ export const fagkveldSketch = (p) => {
         torusAmount,
         randomStartingPoint,
     } = getGlobalParameters();
+
     let width = canvasW ?? 640;
     let height = canvasH ?? 400;
     const startingPoints = generateRandomStartingPoints(
@@ -42,7 +41,6 @@ export const fagkveldSketch = (p) => {
         p.strokeWeight(4);
         p.noFill();
         p.rect(-width / 2, -height / 2, width, height);
-        // p.fill("purple");
         p.strokeWeight(1);
 
         for (let i = 0; i < torusAmount; i++) {
@@ -71,3 +69,21 @@ export const fagkveldSketch = (p) => {
         p.pop();
     };
 };
+
+const generateRandomStartingPoints = (amount, width, height, p) => {
+    const startingPoints = [];
+
+    for (let i = 0; i < amount; i++) {
+        let randomX = p.random(-width / 3, width / 3);
+        let randomY = p.random(-height / 3, height / 3);
+
+        let x = parseInt(randomX);
+        let y = parseInt(randomY);
+
+        startingPoints.push({ x, y });
+    }
+
+    return startingPoints;
+};
+
+export { name, sketch, addParametersToPane };

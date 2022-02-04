@@ -1,3 +1,10 @@
+const defaultParameters = {
+    canvasW: 620,
+    canvasH: 400,
+    palette: "none",
+    algo: "",
+}
+
 const globalParameters = {
     canvasW: 620,
     canvasH: 400,
