@@ -1,22 +1,6 @@
 import { getGlobalParameters } from "../parameters";
 
-const generateRandomStartingPoints = (amount, width, height, p) => {
-    const startingPoints = [];
-
-    for (let i = 0; i < amount; i++) {
-        let randomX = p.random(-width / 3, width / 3);
-        let randomY = p.random(-height / 3, height / 3);
-
-        let x = parseInt(randomX);
-        let y = parseInt(randomY);
-
-        startingPoints.push({ x, y });
-    }
-
-    return startingPoints;
-};
-
-export const fagkveldSketch = (p) => {
+const sketch = (p) => {
     let {
         canvasW,
         canvasH,
@@ -24,6 +8,7 @@ export const fagkveldSketch = (p) => {
         torusAmount,
         randomStartingPoint,
     } = getGlobalParameters();
+
     let width = canvasW ?? 640;
     let height = canvasH ?? 400;
     const startingPoints = generateRandomStartingPoints(
@@ -42,7 +27,6 @@ export const fagkveldSketch = (p) => {
         p.strokeWeight(4);
         p.noFill();
         p.rect(-width / 2, -height / 2, width, height);
-        // p.fill("purple");
         p.strokeWeight(1);
 
         for (let i = 0; i < torusAmount; i++) {
@@ -71,3 +55,33 @@ export const fagkveldSketch = (p) => {
         p.pop();
     };
 };
+
+const generateRandomStartingPoints = (amount, width, height, p) => {
+    const startingPoints = [];
+
+    for (let i = 0; i < amount; i++) {
+        let randomX = p.random(-width / 3, width / 3);
+        let randomY = p.random(-height / 3, height / 3);
+
+        let x = parseInt(randomX);
+        let y = parseInt(randomY);
+
+        startingPoints.push({ x, y });
+    }
+
+    return startingPoints;
+};
+
+const parameters = { torusAmount: 1, randomStartingPoint: false };
+
+const addFolder = (gui) => {
+
+    const folder = gui.addFolder("Torus");
+    folder.add(parameters, "torusAmount", 1, 10, 1);
+    folder.add(parameters, "randomStartingPoint");
+    return folder;
+};
+
+const name = "Fagkveld";
+
+export { name, sketch, addFolder, parameters };

@@ -27,8 +27,8 @@ const drawSineWave = (p, width, height, modifier) => {
     }
 };
 
-export const sineWave = (p) => {
-    let { canvasW, canvasH, palette, ...params } = getGlobalParameters();
+const sketch = (p) => {
+    let { canvasW, canvasH, palette, sinusAmount } = getGlobalParameters();
     let width = canvasW ?? 640;
     let height = canvasH ?? 400;
 
@@ -48,8 +48,20 @@ export const sineWave = (p) => {
 
     p.draw = () => {
         // draw 50 sinusoidal waves
-        for (let modifier = 1; modifier < 50; modifier++) {
+        for (let modifier = 1; modifier < sinusAmount; modifier++) {
             drawSineWave(p, width, height, modifier);
         }
     };
 };
+
+const name = "Sinus Wave"
+const parameters = {sinusAmount: 50}
+
+const addFolder = (gui) => {
+    const folder = gui.addFolder("Sinus Wave");
+    folder.add(parameters, "sinusAmount", 10, 400, 5);
+    return folder;
+};
+
+export { name, sketch, addFolder, parameters };
+

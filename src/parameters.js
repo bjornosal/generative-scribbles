@@ -1,14 +1,25 @@
-const globalParameters = {
+const defaultParameters = {
     canvasW: 620,
     canvasH: 400,
     palette: "none",
-    algo: "",
-    // START TORUS
-    torusAmount: 1,
-    randomStartingPoint: false,
-    // END TORUS
+    algo: "Fagkveld",
+};
+
+let globalParameters = {
+    canvasW: 620,
+    canvasH: 400,
+    palette: "none",
+    algo: "Fagkveld"
 };
 
 export const getGlobalParameters = () => {
     return globalParameters;
+};
+
+export const setGlobalParameters = (newParams) => {
+    globalParameters = newParams;
+};
+
+export const getDefaultParameters = () => {
+    return { ...defaultParameters };
 };
