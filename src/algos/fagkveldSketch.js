@@ -72,15 +72,16 @@ const generateRandomStartingPoints = (amount, width, height, p) => {
     return startingPoints;
 };
 
-const parameters = (gui) => {
-    const torusParams = { torusAmount: 1, randomStartingPoint: false };
+const parameters = { torusAmount: 1, randomStartingPoint: false };
+
+const addFolder = (gui) => {
 
     const folder = gui.addFolder("Torus");
-    folder.add(torusParams, "torusAmount", 1, 10, 1);
-    folder.add(torusParams, "randomStartingPoint");
+    folder.add(parameters, "torusAmount", 1, 10, 1);
+    folder.add(parameters, "randomStartingPoint");
     return folder;
 };
 
 const name = "Fagkveld";
 
-export { name, sketch, parameters };
+export { name, sketch, addFolder, parameters };

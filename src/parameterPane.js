@@ -93,13 +93,12 @@ export default () => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
         if (params?.algo?.sketch) {
-            gui.folders.forEach((folder) => folder.destroy());
-            const res = params.algo.parameters(gui);
-            const controllerObjects = res.controllers.reduce(
-                (objects, controller) => ({ ...objects, ...controller.object }),
-                {}
-            );
-            setGlobalParameters({ ...params, ...controllerObjects });
+            if (event.property === "algo") {
+                gui.folders.forEach((folder) => folder.destroy());
+                params.algo.addFolder(gui);
+            }
+            setGlobalParameters({ ...params, ...params?.algo?.parameters });
+            
             drawing.remove();
             drawing = new p5(params?.algo?.sketch);
         }
