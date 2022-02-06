@@ -1,6 +1,10 @@
 import { Pane } from "tweakpane";
 import * as tome from "chromotome";
-import { getDefaultParameters, getGlobalParameters } from "./parameters";
+import {
+    getDefaultParameters,
+    getGlobalParameters,
+    setGlobalParameters,
+} from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
 import { sketch } from "./algos/fagkveldSketch";
@@ -89,12 +93,13 @@ export default () => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
         if (params?.algo?.sketch) {
-            console.log("asd");
-         //   gui.folders.forEach((folder) => folder.destroy());
-         //   const res = params.algo.parameters(gui);
-           // console.log(res);
-           // const controllerObjects = res.controllers.reduce((objects, controller) => ({...objects, ...controller.object}), {})
-            //params = { ...getDefaultParameters(), ...controllerObjects };
+            gui.folders.forEach((folder) => folder.destroy());
+            const res = params.algo.parameters(gui);
+            const controllerObjects = res.controllers.reduce(
+                (objects, controller) => ({ ...objects, ...controller.object }),
+                {}
+            );
+            setGlobalParameters({ ...params, ...controllerObjects });
             drawing.remove();
             drawing = new p5(params?.algo?.sketch);
         }

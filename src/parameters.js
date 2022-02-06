@@ -5,15 +5,19 @@ const defaultParameters = {
     algo: "Fagkveld",
 };
 
-const globalParameters = {
+let globalParameters = {
     canvasW: 620,
     canvasH: 400,
     palette: "none",
-    algo: "Fagkveld",
+    algo: "Fagkveld"
 };
 
 export const getGlobalParameters = () => {
     return globalParameters;
+};
+
+export const setGlobalParameters = (newParams) => {
+    globalParameters = newParams;
 };
 
 export const getDefaultParameters = () => {

@@ -72,8 +72,13 @@ const generateRandomStartingPoints = (amount, width, height, p) => {
     return startingPoints;
 };
 
-const parameters = () => {
+const parameters = (gui) => {
+    const torusParams = { torusAmount: 1, randomStartingPoint: false };
 
+    const folder = gui.addFolder("Torus");
+    folder.add(torusParams, "torusAmount", 1, 10, 1);
+    folder.add(torusParams, "randomStartingPoint");
+    return folder;
 };
 
 const name = "Fagkveld";
