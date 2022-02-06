@@ -27,7 +27,7 @@ const drawSineWave = (p, width, height, modifier) => {
     }
 };
 
-export const sineWave = (p) => {
+const sketch = (p) => {
     let { canvasW, canvasH, palette, ...params } = getGlobalParameters();
     let width = canvasW ?? 640;
     let height = canvasH ?? 400;
@@ -53,3 +53,14 @@ export const sineWave = (p) => {
         }
     };
 };
+
+const name = "Sinus Wave"
+
+const parameters = (gui) => {
+    const folder = gui.addFolder("Sinu");
+    folder.add({"sinu": 1}, "sinu", "x");
+    return folder;
+};
+
+export { name, sketch, parameters };
+

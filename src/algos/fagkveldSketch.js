@@ -1,19 +1,5 @@
 import { getGlobalParameters } from "../parameters";
 
-const addParametersToPane = (pane, params) => {
-    const torusFolder = pane.addFolder({ title: "Torus" });
-    torusFolder.addInput(params, "torusAmount", {
-        label: "Torus torus torus",
-        step: 1,
-        min: 1,
-        max: 25,
-    });
-    torusFolder.addInput(params, "randomStartingPoint", {
-        label: "Torus random",
-    });
-};
-const name = "Fagkveld"
-
 const sketch = (p) => {
     let {
         canvasW,
@@ -86,4 +72,10 @@ const generateRandomStartingPoints = (amount, width, height, p) => {
     return startingPoints;
 };
 
-export { name, sketch, addParametersToPane };
+const parameters = () => {
+
+};
+
+const name = "Fagkveld";
+
+export { name, sketch, parameters };

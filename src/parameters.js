@@ -2,20 +2,20 @@ const defaultParameters = {
     canvasW: 620,
     canvasH: 400,
     palette: "none",
-    algo: "",
-}
+    algo: "Fagkveld",
+};
 
 const globalParameters = {
     canvasW: 620,
     canvasH: 400,
     palette: "none",
-    algo: "",
-    // START TORUS
-    torusAmount: 1,
-    randomStartingPoint: false,
-    // END TORUS
+    algo: "Fagkveld",
 };
 
 export const getGlobalParameters = () => {
     return globalParameters;
+};
+
+export const getDefaultParameters = () => {
+    return { ...defaultParameters };
 };

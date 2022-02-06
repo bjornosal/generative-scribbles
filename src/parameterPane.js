@@ -1,12 +1,35 @@
 import { Pane } from "tweakpane";
 import * as tome from "chromotome";
-import { getGlobalParameters } from "./parameters";
+import { getDefaultParameters, getGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
-import { sineWave } from "./algos/sineWave";
 import { sketch } from "./algos/fagkveldSketch";
+import GUI from "lil-gui";
 
 let drawing = new p5(sketch);
+
+const createGui = (params) => {
+    const gui = new GUI();
+    const algoSketches = Object.values(algos).reduce(
+        (all, algo) => ({
+            ...all,
+            [algo?.name ?? "Ukjent"]: algo,
+        }),
+        {}
+    );
+
+    const palettes = tome.getAll().reduce((map, palette) => {
+        map[palette.name] = palette;
+        return map;
+    }, {});
+
+    gui.add(params, "algo", algoSketches);
+    gui.add(params, "canvasW", 0, 18000);
+    gui.add(params, "canvasH", 0, 18000);
+    gui.add(params, "palette", palettes);
+
+    return gui;
+};
 
 const createDefaultPane = (params) => {
     const defaultPane = new Pane({
@@ -21,21 +44,21 @@ const createDefaultPane = (params) => {
     }, {});
 
     //TODO: Oppdater Tweakpane-verdiene når de endres???
-    const algoSketches = Object.values(algos).reduce(
-        (all, algo) => ({
-            ...all,
-            [algo?.name ?? "Ukjent"]: algo,
-        }),
-        {}
-    );
-    standardParamsPane.addInput(params, "algo", {
+    const algoSketches = Object.values(algos).map((algo) => ({
+        text: algo?.name ?? "Ukjent",
+        value: { ...algo },
+    }));
+
+    standardParamsPane.addBlade({
+        view: "list",
         label: "Drawing",
         options: algoSketches,
+        value: "algo",
     });
+
     standardParamsPane.addInput(params, "canvasW", { label: "Canvas width" });
     standardParamsPane.addInput(params, "canvasH", { label: "Canvas height" });
     standardParamsPane.addInput(params, "palette", { options: palettes });
-
 
     const resetButton = defaultPane.addButton({ title: "Reload" });
     resetButton.on("click", () => {
@@ -57,20 +80,23 @@ const createDefaultPane = (params) => {
     });
 
     return defaultPane;
-}
+};
 
 export default () => {
     let params = getGlobalParameters();
-
-    let pane = createDefaultPane(params)
-
-    pane.on("change", (_) => {
+    let gui = createGui(params);
+    gui.onFinishChange((event) => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
-        const currentPreset = pane.exportPreset();
-        drawing.remove();
-        pane = createDefaultPane(params)
-        currentPreset.algo.addParametersToPane(pane, params) 
-        drawing = new p5(currentPreset?.algo?.sketch);
+        if (params?.algo?.sketch) {
+            console.log("asd");
+         //   gui.folders.forEach((folder) => folder.destroy());
+         //   const res = params.algo.parameters(gui);
+           // console.log(res);
+           // const controllerObjects = res.controllers.reduce((objects, controller) => ({...objects, ...controller.object}), {})
+            //params = { ...getDefaultParameters(), ...controllerObjects };
+            drawing.remove();
+            drawing = new p5(params?.algo?.sketch);
+        }
     });
 };

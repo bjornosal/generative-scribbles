@@ -1,4 +1,4 @@
 import * as fagkveld from "./fagkveldSketch";
-import { sineWave } from "./sineWave";
+import * as sineWave from "./sineWave";
 
-export default { fagkveld };
+export default { fagkveld, sineWave };
