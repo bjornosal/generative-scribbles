@@ -5,8 +5,8 @@ let globalParameters = {
     palette: "Velg én",
     algo: "Velg én",
     imageName: "Bildet mitt",
-    saveImage() {
-        pg.save(`${globalParameters?.imageName}.png`)
+    async saveImage() {
+        pg.save("123.jpg")
     }
 };
 
