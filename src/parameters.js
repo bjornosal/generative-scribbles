@@ -1,25 +1,24 @@
-const defaultParameters = {
-    canvasW: 620,
-    canvasH: 400,
-    palette: "none",
-    algo: "Fagkveld",
-};
-
 let globalParameters = {
     canvasW: 620,
     canvasH: 400,
-    palette: "none",
-    algo: "Fagkveld"
+    printScale: 10,
+    palette: "Velg én",
+    algo: "Velg én",
+    imageName: "Bildet mitt",
+    saveImage() {
+        pg.save(`${globalParameters?.imageName}.png`)
+    }
 };
 
-export const getGlobalParameters = () => {
-    return globalParameters;
-};
+let pg;
+
+export const getGlobalParameters = () => globalParameters;
 
 export const setGlobalParameters = (newParams) => {
     globalParameters = newParams;
 };
 
-export const getDefaultParameters = () => {
-    return { ...defaultParameters };
+export const getPGraphics = () => pg;
+export const setPGraphics = (newGraphic) => {
+    pg = newGraphic;
 };

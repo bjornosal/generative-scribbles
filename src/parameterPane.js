@@ -1,10 +1,6 @@
 import { Pane } from "tweakpane";
 import * as tome from "chromotome";
-import {
-    getDefaultParameters,
-    getGlobalParameters,
-    setGlobalParameters,
-} from "./parameters";
+import { getGlobalParameters, getPGraphics, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
 import { sketch } from "./algos/fagkveldSketch";
@@ -27,63 +23,21 @@ const createGui = (params) => {
         return map;
     }, {});
 
-    gui.add(params, "algo", algoSketches);
-    gui.add(params, "canvasW", 0, 18000);
-    gui.add(params, "canvasH", 0, 18000);
-    gui.add(params, "palette", palettes);
+    gui.add(params, "algo", algoSketches).name("Algorithm");
+    gui.add(params, "canvasW", 0, 18000).name("Canvas width");
+    gui.add(params, "canvasH", 0, 18000).name("Canvas height");
+    gui.add(params, "printScale", 1, 50, 1).name("Print scale");
+    gui.add(params, "palette", palettes).name("Color palette");
+    gui.add(params, "imageName").name("Image name");
+    gui.add(params, "saveImage").name("Save image")
 
-    return gui;
-};
 
-const createDefaultPane = (params) => {
-    const defaultPane = new Pane({
-        title: "Parameters",
-        expanded: true,
-    });
-
-    const standardParamsPane = defaultPane.addFolder({ title: "Standard" });
-    const palettes = tome.getAll().reduce((map, palette) => {
-        map[palette.name] = palette;
-        return map;
-    }, {});
-
-    //TODO: Oppdater Tweakpane-verdiene når de endres???
-    const algoSketches = Object.values(algos).map((algo) => ({
-        text: algo?.name ?? "Ukjent",
-        value: { ...algo },
-    }));
-
-    standardParamsPane.addBlade({
-        view: "list",
-        label: "Drawing",
-        options: algoSketches,
-        value: "algo",
-    });
-
-    standardParamsPane.addInput(params, "canvasW", { label: "Canvas width" });
-    standardParamsPane.addInput(params, "canvasH", { label: "Canvas height" });
-    standardParamsPane.addInput(params, "palette", { options: palettes });
-
-    const resetButton = defaultPane.addButton({ title: "Reload" });
-    resetButton.on("click", () => {
-        window.location.reload();
-    });
-
-    const savingFolder = defaultPane.addFolder({ title: "Saving shit" });
-    const saveButton = savingFolder.addButton({ title: "Save" });
-    saveButton.on("click", () => {
-        drawing.saveCanvas("fagkveld", "jpg");
-    });
-
-    const freezeButton = savingFolder.addButton({
-        title: "Freeze/Thaw",
-    });
-
-    freezeButton.on("click", () => {
+/*     freezeButton.on("click", () => {
         drawing.isLooping() ? drawing.noLoop() : drawing.loop();
     });
+ */
 
-    return defaultPane;
+    return gui;
 };
 
 export default () => {
@@ -98,7 +52,7 @@ export default () => {
                 params.algo.addFolder(gui);
             }
             setGlobalParameters({ ...params, ...params?.algo?.parameters });
-            
+
             drawing.remove();
             drawing = new p5(params?.algo?.sketch);
         }
