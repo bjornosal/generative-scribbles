@@ -1,11 +1,5 @@
-import { Pane } from "tweakpane";
 import * as tome from "chromotome";
-import {
-    getGlobalParameters,
-    getPGraphics,
-    setGlobalParameters,
-    setPGraphics,
-} from "./parameters";
+import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
 import { sketch } from "./algos/fagkveldSketch";
@@ -27,19 +21,49 @@ const createGui = (params) => {
         map[palette.name] = palette;
         return map;
     }, {});
-        gui.add(params, "algo", algoSketches).name("Algorithm");
+
+    gui.add(params, "algo", algoSketches).name("Algorithm");
+    //Assuming 300 PPI print size
+    gui.add(params, "printSize", {
+        A0: {
+            width: 9920,
+            height: 7016,
+        },
+        A1: {
+            width: 7016,
+            height: 4960,
+        },
+        A2: {
+            width: 4960,
+            height: 3508,
+        },
+        A3: {
+            width: 3508,
+            height: 2480,
+        },
+        A4: {
+            width: 2480,
+            height: 1754,
+        },
+        A5: {
+            width: 1754,
+            height: 1240,
+        },
+        A6: {
+            width: 1240,
+            height: 877,
+        }
+    }).name("Print size");
     gui.add(params, "canvasW", 0, 18000).name("Canvas width");
     gui.add(params, "canvasH", 0, 18000).name("Canvas height");
-    gui.add(params, "printScale", 1, 50, 1).name("Print scale");
+    gui.add(params, "scaleRatio", 1).name("Scale ratio").disable();
+    gui.add(params, "exportRatio", 1, 10, 1).name("Export ratio");
     gui.add(params, "palette", palettes).name("Color palette");
-    gui.add(params, "imageName").name("Image name");
-    gui.add(params, "saveImage").name("Save image");
-
+    
     /*     freezeButton.on("click", () => {
         drawing.isLooping() ? drawing.noLoop() : drawing.loop();
     });
  */
-    console.log(drawing);
     return gui;
 };
 

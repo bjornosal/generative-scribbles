@@ -1,4 +1,4 @@
-import { getGlobalParameters, setPGraphics } from "../parameters";
+import { getGlobalParameters } from "../parameters";
 
 const sketch = (p) => {
     let {
@@ -38,7 +38,6 @@ const sketch = (p) => {
                 drawTorus(0, 0);
             }
         }
-        setPGraphics(p)
     };
 
     p.windowResized = () => {

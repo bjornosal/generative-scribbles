@@ -38,7 +38,7 @@ const sketch = (p) => {
 
         p.angleMode(p.RADIANS);
         p.noLoop();
-
+        
         y0 = [];
         x1 = [];
         y1 = [];

@@ -1,5 +1,5 @@
 import * as fagkveld from "./fagkveldSketch";
 import * as sineWave from "./sineWave";
-import * as simple from "./simple";
+import * as base from "./base";
 
-export default { fagkveld, sineWave, simple };
+export default { fagkveld, sineWave, base };
