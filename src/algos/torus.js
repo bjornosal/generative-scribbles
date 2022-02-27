@@ -1,19 +1,21 @@
 import { getGlobalParameters } from "../parameters";
 
+
 const sketch = (p) => {
     let { printSize, scaleRatio, exportRatio, palette, torusAmount, randomStartingPoint } = getGlobalParameters();
-    let buffer;
-    let canvas;
-    //TODO:
     let printingSize = printSize ?? {
         width: 3508,
         height: 2480,
     };
 
+    let canvas;
+    let buffer;
+    let {background, colors, stroke, size} = palette;
+
     const startingPoints = generateRandomStartingPoints(
         torusAmount,
-        p.width,
-        p.height,
+        printingSize.width,
+        printingSize.height,
         p
     );
 
@@ -37,14 +39,9 @@ const sketch = (p) => {
         buffer.scale(scaleRatio);
         //Draw here :) ⬇️
 
-
-
         p.pixelDensity(20)
         p.stroke("purple");
-        p.strokeWeight(4);
         p.noFill();
-        p.rect(-p.width / 2, -p.height / 2, p.width, p.height);
-        p.strokeWeight(1);
 
         for (let i = 0; i < parameters.torusAmount; i++) {
             if (randomStartingPoint) {
@@ -109,7 +106,7 @@ const generateRandomStartingPoints = (amount, width, height, p) => {
     return startingPoints;
 };
 
-const name = "Fagkveld2";
+const name = "Fagkveld";
 
 const parameters = { torusAmount: 1, randomStartingPoint: false };
 

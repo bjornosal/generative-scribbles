@@ -28,9 +28,11 @@ const drawSineWave = (p, width, height, modifier) => {
 };
 
 const sketch = (p) => {
-    let { canvasW, canvasH, palette, sinusAmount } = getGlobalParameters();
-    let width = canvasW ?? 640;
-    let height = canvasH ?? 400;
+    let { printSize, palette, sinusAmount } = getGlobalParameters();
+    let {width, height} = printSize ?? {
+        width: 3508,
+        height: 2480,
+    };
 
     p.setup = () => {
         p.createCanvas(width, height);
@@ -51,7 +53,7 @@ const sketch = (p) => {
         for (let modifier = 1; modifier < sinusAmount; modifier++) {
             drawSineWave(p, width, height, modifier);
         }
-    };
+    }; 
 };
 
 const name = "Sinus Wave"

@@ -1,6 +1,4 @@
 let globalParameters = {
-    canvasW: 620,
-    canvasH: 400,
     printSize: null,
     scaleRatio: 1,
     exportRatio: 4,
@@ -13,3 +11,4 @@ export const getGlobalParameters = () => globalParameters;
 export const setGlobalParameters = (newParams) => {
     globalParameters = newParams;
 };
+ 

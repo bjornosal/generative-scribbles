@@ -2,7 +2,7 @@ import * as tome from "chromotome";
 import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
-import { sketch } from "./algos/fagkveldSketch";
+import { sketch } from "./algos/torus";
 import GUI from "lil-gui";
 
 let drawing = new p5(sketch);
@@ -22,6 +22,7 @@ const createGui = (params) => {
         return map;
     }, {});
 
+    gui.add({"info":"Print by pressing 'E'"}, "info").name("Print").disable();
     gui.add(params, "algo", algoSketches).name("Algorithm");
     //Assuming 300 PPI print size
     gui.add(params, "printSize", {
@@ -54,8 +55,6 @@ const createGui = (params) => {
             height: 877,
         }
     }).name("Print size");
-    gui.add(params, "canvasW", 0, 18000).name("Canvas width");
-    gui.add(params, "canvasH", 0, 18000).name("Canvas height");
     gui.add(params, "scaleRatio", 1).name("Scale ratio").disable();
     gui.add(params, "exportRatio", 1, 10, 1).name("Export ratio");
     gui.add(params, "palette", palettes).name("Color palette");

@@ -4,15 +4,24 @@ const sketch = (p) => {
     let { printSize, scaleRatio, exportRatio, palette } = getGlobalParameters();
     let buffer;
     let canvas;
-    //TODO:
     let printingSize = printSize ?? {
         width: 3508,
         height: 2480,
     };
+    //No guarantee these values are set.
+    //Background is a string with hex value
+    //Colors is an array of strings with hex value
+    //Stroke is a hex value
+    //Size is an integer
+    //https://kgolid.github.io/chromotome-site/
+    let {background, colors, stroke, size} = palette;
+    //Setting background to a default white if no background exists.
+    background = background ? background : "#FFF"
 
     p.setup = () => {
         let w = printingSize.width / exportRatio;
         let h = printingSize.height / exportRatio;
+        p.background("red");
         buffer = p.createGraphics(w, h);
         canvas = p.createCanvas(w, h);
         // Adjust according to screens pixel density.
@@ -23,14 +32,15 @@ const sketch = (p) => {
     };
 
     p.draw = () => {
-        p.background(220);
         // Clear buffer each frame
         buffer.clear();
         // Transform (scale) all the drawings
         buffer.scale(scaleRatio);
-        // Make all the drawing to the buffer instead of canvas
-        buffer.circle(p.width / 2, p.height / 2, p.width / 4);
+        buffer.background(background);
+        
         //Draw here :) ⬇️
+        
+        buffer.circle(p.width / 2, p.height / 2, p.width / 4);
 
         //Stop drawing here ⬆️
         // Draw buffer to canvas
@@ -45,7 +55,7 @@ const sketch = (p) => {
         // Get timestamp to name the ouput file
         let timestamp = new Date().getTime();
         // Save as PNG
-        p.save(buffer, p.str(timestamp), "png");
+        p.save(buffer, p.str(`${name}-${timestamp}`), "png");
         // Reset scaleRation back to original, re-create buffer, re-draw
         scaleRatio = 1;
         buffer = p.createGraphics(p.width, p.height);
