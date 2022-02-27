@@ -1,6 +1,18 @@
 import { getGlobalParameters } from "../parameters";
 
+const name = "Torus";
+
+const parameters = { torusAmount: 1, randomStartingPoint: false };
+
+const addFolder = (gui) => {
+    const folder = gui.addFolder(name);
+    folder.add(parameters, "torusAmount", 1, 10, 1).name("Amount of torus");
+    folder.add(parameters, "randomStartingPoint").name("Random starting point");
+    return folder;
+};
+
 const sketch = (p) => {
+    //Add parameters that you have added to the algorithm here so you can see the changed values.
     let {
         printSize,
         scaleRatio,
@@ -16,6 +28,7 @@ const sketch = (p) => {
 
     let canvas;
     let buffer;
+
     //No guarantee these values are set.
     //Background is a string with hex value
     //Colors is an array of strings with hex value
@@ -26,48 +39,41 @@ const sketch = (p) => {
     //Setting background to a default white if no background exists.
     background = background ? background : "#FFF";
 
-    const startingPoints = generateRandomStartingPoints(
-        torusAmount,
-        printingSize.width,
-        printingSize.height,
-        p
-    );
+    let startingPoints;
     let randomColor;
+
     p.setup = () => {
-        let w = printingSize.width / exportRatio;
-        let h = printingSize.height / exportRatio;
-        buffer = p.createGraphics(w, h, p.WEBGL);
-        canvas = p.createCanvas(w, h, p.WEBGL);
-        // Adjust according to screens pixel density.
-        exportRatio /= p.pixelDensity();
+        defaultSetup();
         //Do your setup here ⬇️
-        randomColor = colors ? p.random(colors) : "red"
+        randomColor = colors ? p.random(colors) : "red";
+        startingPoints = generateRandomStartingPoints(
+            torusAmount,
+            p.width,
+            p.height,
+            p
+        );
     };
 
     p.draw = () => {
-        p.background(background);
-        // Clear buffer each frame
-        buffer.clear();
-        // Transform (scale) all the drawings
-        buffer.scale(scaleRatio);
+        defaultDraw();
         //Draw here :) ⬇️
+        //Add background color on drawing.
         buffer.background(background);
-
+        //Add color to everything being drawn from here on out.
         buffer.stroke(randomColor);
         buffer.noFill();
-
+        //Draw torus', tori?
         for (let i = 0; i < parameters.torusAmount; i++) {
             if (randomStartingPoint) {
                 let startingPoint = startingPoints[i];
                 drawTorus(startingPoint.x, startingPoint.y);
             } else {
-                drawTorus(0,0);
+                drawTorus(0, 0);
             }
         }
 
         //Stop drawing here ⬆️
-        // Draw buffer to canvas
-        p.image(buffer, -p.width/2, -p.height/2);
+        p.image(buffer, -p.width / 2, -p.height / 2);
     };
 
     const drawTorus = (x, y) => {
@@ -80,6 +86,27 @@ const sketch = (p) => {
         buffer.pop();
     };
 
+    const generateRandomStartingPoints = (amount, width, height, p) => {
+        const startingPoints = [];
+
+        for (let i = 0; i < amount; i++) {
+            let randomX = p.random(-width / 3, width / 3);
+            let randomY = p.random(-height / 3, height / 3);
+
+            let x = parseInt(randomX);
+            let y = parseInt(randomY);
+
+            startingPoints.push({ x, y });
+        }
+
+        return startingPoints;
+    };
+
+    /*
+    ##########################################
+     Don't touch these functions unless you know what you're doing.:) ⬇️ 
+    ##########################################
+    */
     const exportHighResolution = () => {
         scaleRatio = exportRatio;
         // Re-create buffer with exportRatio and re-draw
@@ -104,33 +131,23 @@ const sketch = (p) => {
             exportHighResolution();
         }
     };
-};
 
-const generateRandomStartingPoints = (amount, width, height, p) => {
-    const startingPoints = [];
+    const defaultSetup = () => {
+        let w = printingSize.width / exportRatio;
+        let h = printingSize.height / exportRatio;
+        buffer = p.createGraphics(w, h, p.WEBGL);
+        canvas = p.createCanvas(w, h, p.WEBGL);
+        // Adjust according to screens pixel density.
+        exportRatio /= p.pixelDensity();
+    };
 
-    for (let i = 0; i < amount; i++) {
-        let randomX = p.random(-width / 3, width / 3);
-        let randomY = p.random(-height / 3, height / 3);
-
-        let x = parseInt(randomX);
-        let y = parseInt(randomY);
-
-        startingPoints.push({ x, y });
-    }
-
-    return startingPoints;
-};
-
-const name = "Torus";
-
-const parameters = { torusAmount: 1, randomStartingPoint: false };
-
-const addFolder = (gui) => {
-    const folder = gui.addFolder(name);
-    folder.add(parameters, "torusAmount", 1, 10, 1);
-    folder.add(parameters, "randomStartingPoint");
-    return folder;
+    const defaultDraw = () => {
+        p.background(background);
+        // Clear buffer each frame
+        buffer.clear();
+        // Transform (scale) all the drawings
+        buffer.scale(scaleRatio);
+    };
 };
 
 export { name, sketch, addFolder, parameters };

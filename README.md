@@ -9,13 +9,16 @@ Using chromotome for colors.
 
 ## local dev
 
-Run the following commands
+You need npm to run this project, which comes bundled with node.js.\
+Download node.js [here](https://nodejs.org/en/download/).
+
+After npm is installed and you've cloned this repository, run the following commands
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open your browser at the url provided in the terminal.
+Open your browser at the url provided in the terminal. (It's copied to your clipboard.)
 
 tada.

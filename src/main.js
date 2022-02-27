@@ -2,7 +2,7 @@ import * as tome from "chromotome";
 import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
-import { sketch as defaultSketch } from "./algos/torus";
+import { sketch as defaultSketch } from "./algos/particles";
 import GUI from "lil-gui";
 
 let drawing = new p5(defaultSketch);
@@ -22,7 +22,7 @@ const createGui = (params) => {
         return map;
     }, {});
 
-    gui.add({ info: "Print by pressing 'E'" }, "info").name("Print").disable();
+    gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
     gui.add(params, "algo", algoSketches).name("Algorithm");
     //Assuming 300 PPI print size
     gui.add(params, "printSize", {
