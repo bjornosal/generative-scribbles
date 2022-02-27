@@ -106,7 +106,7 @@ const generateRandomStartingPoints = (amount, width, height, p) => {
     return startingPoints;
 };
 
-const name = "Fagkveld";
+const name = "Torus";
 
 const parameters = { torusAmount: 1, randomStartingPoint: false };
 

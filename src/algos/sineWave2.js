@@ -1,7 +1,42 @@
 import { getGlobalParameters } from "../parameters";
 
+let y0, x1, y1, x2, y2;
+
+const drawSineWave = (buffer, width, height, modifier, color) => {
+    for (let i = 0; i <= width; i++) {
+        y0[i] = height / 2;
+
+        if (i === 0) {
+            y1[i] = y0;
+            x1[i] = 0 + modifier;
+        } else {
+            y1[i] = y1[i - 1];
+            x1[i] = x1[i - 1];
+        }
+
+        buffer.stroke(
+            `rgba(0, 0, 0, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
+        );
+        const amplitude = (i / 10) * (modifier / 60);
+
+        x2[i] = x1[i] + 1;
+        y2[i] = amplitude * buffer.sin(i / 10) + y0[i];
+
+        buffer.line(x1[i], y1[i], x2[i], y2[i]);
+
+        x1[i] = x2[i];
+        y1[i] = y2[i];
+    }
+};
+
 const sketch = (p) => {
-    let { printSize, scaleRatio, exportRatio, palette } = getGlobalParameters();
+    let {
+        printSize,
+        scaleRatio,
+        exportRatio,
+        palette,
+        sinusAmount,
+    } = getGlobalParameters();
     let buffer;
     let canvas;
     let printingSize = printSize ?? {
@@ -14,9 +49,9 @@ const sketch = (p) => {
     //Stroke is a hex value
     //Size is an integer
     //https://kgolid.github.io/chromotome-site/
-    let {background, colors, stroke, size} = palette;
+    let { background, colors, stroke, size } = palette;
     //Setting background to a default white if no background exists.
-    background = background ? background : "#FFF"
+    background = background ? background : "#FFF";
 
     p.setup = () => {
         let w = printingSize.width / exportRatio;
@@ -26,8 +61,14 @@ const sketch = (p) => {
         // Adjust according to screens pixel density.
         exportRatio /= p.pixelDensity();
         //Do your setup here ⬇️
+        p.angleMode(p.RADIANS);
+        p.noLoop();
 
-
+        y0 = [];
+        x1 = [];
+        y1 = [];
+        x2 = [];
+        y2 = [];
     };
 
     p.draw = () => {
@@ -38,12 +79,14 @@ const sketch = (p) => {
         buffer.background(background);
 
         //Draw here :) ⬇️
-        
-        buffer.circle(p.width / 2, p.height / 2, p.width / 4);
+
+        for (let modifier = 1; modifier < sinusAmount; modifier++) {
+            drawSineWave(buffer, p.width, p.height, modifier);
+        }
 
         //Stop drawing here ⬆️
         // Draw buffer to canvas
-        p.image(buffer, 0, 0);   
+        p.image(buffer, 0, 0);
     };
 
     const exportHighResolution = () => {
@@ -68,10 +111,12 @@ const sketch = (p) => {
     };
 };
 
-const name = "Base";
-const parameters = {};
+const name = "Sinus Wave2";
+const parameters = { sinusAmount: 50 };
+
 const addFolder = (gui) => {
-    const folder = gui.addFolder(name);
+    const folder = gui.addFolder("Sinus Wave");
+    folder.add(parameters, "sinusAmount", 10, 400, 5);
     return folder;
 };
 
