@@ -22,7 +22,7 @@ const createGui = (params) => {
         return map;
     }, {});
 
-    gui.add({ info: "Print by pressing 'E'" }, "info").name("Print").disable();
+    gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
     gui.add(params, "algo", algoSketches).name("Algorithm");
     //Assuming 300 PPI print size
     gui.add(params, "printSize", {
