@@ -2,7 +2,7 @@ import * as tome from "chromotome";
 import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
-import { sketch as defaultSketch } from "./algos/torus";
+import { sketch as defaultSketch } from "./algos/particles";
 import GUI from "lil-gui";
 
 let drawing = new p5(defaultSketch);

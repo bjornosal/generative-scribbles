@@ -1,5 +1,13 @@
 import { getGlobalParameters } from "../parameters";
 
+// These values needs to be changed.
+const name = "Base";
+const parameters = {};
+const addFolder = (gui) => {
+    const folder = gui.addFolder(name);
+    return folder;
+};
+
 const sketch = (p) => {
     let { printSize, scaleRatio, exportRatio, palette } = getGlobalParameters();
     let buffer;
@@ -14,36 +22,48 @@ const sketch = (p) => {
     //Stroke is a hex value
     //Size is an integer
     //https://kgolid.github.io/chromotome-site/
-    let {background, colors, stroke, size} = palette;
+    let { background, colors, stroke, size } = palette;
     //Setting background to a default white if no background exists.
-    background = background ? background : "#FFF"
+    background = background ? background : "#FFF";
 
     p.setup = () => {
+        defaultSetup();
+        //Do your setup here ⬇️
+    };
+
+    p.draw = () => {
+        // Clear buffer each frame
+        defaultDraw();
+
+        //Draw here :) ⬇️
+
+        buffer.circle(p.width / 2, p.height / 2, p.width / 4);
+
+        //Stop drawing here ⬆️
+        // Draw buffer to canvas
+        p.image(buffer, 0, 0);
+    };
+
+    /*
+    ##########################################
+     Don't touch these functions unless you know what you're doing.:) ⬇️ 
+    ##########################################
+    */
+
+    const defaultSetup = () => {
         let w = printingSize.width / exportRatio;
         let h = printingSize.height / exportRatio;
         buffer = p.createGraphics(w, h);
         canvas = p.createCanvas(w, h);
         // Adjust according to screens pixel density.
         exportRatio /= p.pixelDensity();
-        //Do your setup here ⬇️
-
-
     };
 
-    p.draw = () => {
-        // Clear buffer each frame
+    const defaultDraw = () => {
         buffer.clear();
         // Transform (scale) all the drawings
         buffer.scale(scaleRatio);
         buffer.background(background);
-
-        //Draw here :) ⬇️
-        
-        buffer.circle(p.width / 2, p.height / 2, p.width / 4);
-
-        //Stop drawing here ⬆️
-        // Draw buffer to canvas
-        p.image(buffer, 0, 0);   
     };
 
     const exportHighResolution = () => {
@@ -66,15 +86,6 @@ const sketch = (p) => {
             exportHighResolution();
         }
     };
-};
-
-// These values needs to be changed.
-
-const name = "Base";
-const parameters = {};
-const addFolder = (gui) => {
-    const folder = gui.addFolder(name);
-    return folder;
 };
 
 export { name, sketch, addFolder, parameters };

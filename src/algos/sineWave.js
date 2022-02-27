@@ -1,34 +1,20 @@
 import { hexToRgb } from "../colorUtil.js";
 import { getGlobalParameters } from "../parameters";
 
+const name = "Sinus Wave";
+const parameters = { sinusAmount: 50, sinusStrokeWeight: 1, sinusModifier: 1 };
+
+const addFolder = (gui) => {
+    const folder = gui.addFolder("Sinus Wave");
+    folder.add(parameters, "sinusAmount", 10, 400, 5).name("Sinus waves");
+    folder.add(parameters, "sinusStrokeWeight", 1, 10, 1).name("Stroke weight");
+    folder.add(parameters, "sinusModifier", 1, 10, 1).name("Modifier incr.");
+    return folder;
+};
+
 let y0, x1, y1, x2, y2;
 
-const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWeight=1) => {
-    for (let i = 0; i <= width; i++) {
-        y0[i] = height / 2;
 
-        if (i === 0) {
-            y1[i] = y0;
-            x1[i] = 0 + modifier;
-        } else {
-            y1[i] = y1[i - 1];
-            x1[i] = x1[i - 1];
-        }
-        const { r, g, b } = hexToRgb(color);
-        buffer.strokeWeight(strokeWeight);
-        buffer.stroke(
-            `rgba(${r}, ${g}, ${b}, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
-        );
-        const amplitude = (i / 10) * (modifier / 60);
-        x2[i] = x1[i] + 1;
-        y2[i] = amplitude * buffer.sin(i / 10) + y0[i];
-
-        buffer.line(x1[i], y1[i], x2[i], y2[i]);
-
-        x1[i] = x2[i];
-        y1[i] = y2[i];
-    }
-};
 
 const sketch = (p) => {
     let {
@@ -38,7 +24,7 @@ const sketch = (p) => {
         palette,
         sinusAmount,
         sinusStrokeWeight,
-        sinusModifier
+        sinusModifier,
     } = getGlobalParameters();
     let buffer;
     let canvas;
@@ -57,12 +43,7 @@ const sketch = (p) => {
     background = background ? background : "#FFF";
 
     p.setup = () => {
-        let w = printingSize.width / exportRatio;
-        let h = printingSize.height / exportRatio;
-        buffer = p.createGraphics(w, h);
-        canvas = p.createCanvas(w, h);
-        // Adjust according to screens pixel density.
-        exportRatio /= p.pixelDensity();
+        defaultSetup();
         //Do your setup here ⬇️
         p.angleMode(p.RADIANS);
         p.noLoop();
@@ -76,14 +57,14 @@ const sketch = (p) => {
 
     p.draw = () => {
         // Clear buffer each frame
-        buffer.clear();
-        // Transform (scale) all the drawings
-        buffer.scale(scaleRatio);
-        buffer.background(background);
-
+        defaultDraw();
         //Draw here :) ⬇️
 
-        for (let modifier = 1; modifier < sinusAmount; modifier+=sinusModifier) {
+        for (
+            let modifier = 1;
+            modifier < sinusAmount;
+            modifier += sinusModifier
+        ) {
             drawSineWave(
                 buffer,
                 p.width,
@@ -97,6 +78,63 @@ const sketch = (p) => {
         //Stop drawing here ⬆️
         // Draw buffer to canvas
         p.image(buffer, 0, 0);
+    };
+
+    const drawSineWave = (
+        buffer,
+        width,
+        height,
+        modifier,
+        color = "#000",
+        strokeWeight = 1
+    ) => {
+        for (let i = 0; i <= width; i++) {
+            y0[i] = height / 2;
+    
+            if (i === 0) {
+                y1[i] = y0;
+                x1[i] = 0 + modifier;
+            } else {
+                y1[i] = y1[i - 1];
+                x1[i] = x1[i - 1];
+            }
+            const { r, g, b } = hexToRgb(color);
+            buffer.strokeWeight(strokeWeight);
+            buffer.stroke(
+                `rgba(${r}, ${g}, ${b}, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
+            );
+            const amplitude = (i / 10) * (modifier / 60);
+            x2[i] = x1[i] + 1;
+            y2[i] = amplitude * buffer.sin(i / 10) + y0[i];
+    
+            buffer.line(x1[i], y1[i], x2[i], y2[i]);
+    
+            x1[i] = x2[i];
+            y1[i] = y2[i];
+        }
+    };
+
+    /*
+    ##########################################
+     Don't touch these functions unless you know what you're doing.:) ⬇️ 
+    ##########################################
+    */
+
+
+    const defaultSetup = () => {
+        let w = printingSize.width / exportRatio;
+        let h = printingSize.height / exportRatio;
+        buffer = p.createGraphics(w, h);
+        canvas = p.createCanvas(w, h);
+        // Adjust according to screens pixel density.
+        exportRatio /= p.pixelDensity();
+    };
+
+    const defaultDraw = () => {
+        buffer.clear();
+        // Transform (scale) all the drawings
+        buffer.scale(scaleRatio);
+        buffer.background(background);
     };
 
     /**
@@ -122,17 +160,6 @@ const sketch = (p) => {
             exportHighResolution();
         }
     };
-};
-
-const name = "Sinus Wave";
-const parameters = { sinusAmount: 50, sinusStrokeWeight: 1, sinusModifier: 1 };
-
-const addFolder = (gui) => {
-    const folder = gui.addFolder("Sinus Wave");
-    folder.add(parameters, "sinusAmount", 10, 400, 5).name("Sinus waves");
-    folder.add(parameters, "sinusStrokeWeight", 1, 10, 1).name("Stroke weight");
-    folder.add(parameters, "sinusModifier", 1, 10, 1).name("Modifier incr.");
-    return folder;
 };
 
 export { name, sketch, addFolder, parameters };

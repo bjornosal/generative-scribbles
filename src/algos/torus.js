@@ -62,7 +62,7 @@ const sketch = (p) => {
         //Add color to everything being drawn from here on out.
         buffer.stroke(randomColor);
         buffer.noFill();
-
+        //Draw torus', tori?
         for (let i = 0; i < parameters.torusAmount; i++) {
             if (randomStartingPoint) {
                 let startingPoint = startingPoints[i];
@@ -73,7 +73,7 @@ const sketch = (p) => {
         }
 
         //Stop drawing here ⬆️
-        drawImageToCanvas(p, buffer);
+        p.image(buffer, -p.width / 2, -p.height / 2);
     };
 
     const drawTorus = (x, y) => {
@@ -86,7 +86,27 @@ const sketch = (p) => {
         buffer.pop();
     };
 
-    //Don't touch these functions :) ⬇️
+    const generateRandomStartingPoints = (amount, width, height, p) => {
+        const startingPoints = [];
+
+        for (let i = 0; i < amount; i++) {
+            let randomX = p.random(-width / 3, width / 3);
+            let randomY = p.random(-height / 3, height / 3);
+
+            let x = parseInt(randomX);
+            let y = parseInt(randomY);
+
+            startingPoints.push({ x, y });
+        }
+
+        return startingPoints;
+    };
+
+    /*
+    ##########################################
+     Don't touch these functions unless you know what you're doing.:) ⬇️ 
+    ##########################################
+    */
     const exportHighResolution = () => {
         scaleRatio = exportRatio;
         // Re-create buffer with exportRatio and re-draw
@@ -128,26 +148,6 @@ const sketch = (p) => {
         // Transform (scale) all the drawings
         buffer.scale(scaleRatio);
     };
-
-    const drawImageToCanvas = (p, buffer) => {
-        p.image(buffer, -p.width / 2, -p.height / 2);
-    };
-};
-
-const generateRandomStartingPoints = (amount, width, height, p) => {
-    const startingPoints = [];
-
-    for (let i = 0; i < amount; i++) {
-        let randomX = p.random(-width / 3, width / 3);
-        let randomY = p.random(-height / 3, height / 3);
-
-        let x = parseInt(randomX);
-        let y = parseInt(randomY);
-
-        startingPoints.push({ x, y });
-    }
-
-    return startingPoints;
 };
 
 export { name, sketch, addFolder, parameters };
