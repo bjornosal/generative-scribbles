@@ -3,7 +3,7 @@ import { getGlobalParameters } from "../parameters";
 
 let y0, x1, y1, x2, y2;
 
-const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWeight=5) => {
+const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWeight=1) => {
     for (let i = 0; i <= width; i++) {
         y0[i] = height / 2;
 
@@ -20,7 +20,6 @@ const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWei
             `rgba(${r}, ${g}, ${b}, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
         );
         const amplitude = (i / 10) * (modifier / 60);
-
         x2[i] = x1[i] + 1;
         y2[i] = amplitude * buffer.sin(i / 10) + y0[i];
 

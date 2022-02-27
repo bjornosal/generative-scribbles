@@ -68,6 +68,8 @@ const sketch = (p) => {
     };
 };
 
+// These values needs to be changed.
+
 const name = "Base";
 const parameters = {};
 const addFolder = (gui) => {
