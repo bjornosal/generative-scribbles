@@ -1,13 +1,8 @@
-import { Pane } from "tweakpane";
 import * as tome from "chromotome";
-import {
-    getDefaultParameters,
-    getGlobalParameters,
-    setGlobalParameters,
-} from "./parameters";
+import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
 import algos from "./algos";
-import { sketch } from "./algos/fagkveldSketch";
+import { sketch } from "./algos/torus";
 import GUI from "lil-gui";
 
 let drawing = new p5(sketch);
@@ -27,63 +22,48 @@ const createGui = (params) => {
         return map;
     }, {});
 
-    gui.add(params, "algo", algoSketches);
-    gui.add(params, "canvasW", 0, 18000);
-    gui.add(params, "canvasH", 0, 18000);
-    gui.add(params, "palette", palettes);
-
-    return gui;
-};
-
-const createDefaultPane = (params) => {
-    const defaultPane = new Pane({
-        title: "Parameters",
-        expanded: true,
-    });
-
-    const standardParamsPane = defaultPane.addFolder({ title: "Standard" });
-    const palettes = tome.getAll().reduce((map, palette) => {
-        map[palette.name] = palette;
-        return map;
-    }, {});
-
-    //TODO: Oppdater Tweakpane-verdiene når de endres???
-    const algoSketches = Object.values(algos).map((algo) => ({
-        text: algo?.name ?? "Ukjent",
-        value: { ...algo },
-    }));
-
-    standardParamsPane.addBlade({
-        view: "list",
-        label: "Drawing",
-        options: algoSketches,
-        value: "algo",
-    });
-
-    standardParamsPane.addInput(params, "canvasW", { label: "Canvas width" });
-    standardParamsPane.addInput(params, "canvasH", { label: "Canvas height" });
-    standardParamsPane.addInput(params, "palette", { options: palettes });
-
-    const resetButton = defaultPane.addButton({ title: "Reload" });
-    resetButton.on("click", () => {
-        window.location.reload();
-    });
-
-    const savingFolder = defaultPane.addFolder({ title: "Saving shit" });
-    const saveButton = savingFolder.addButton({ title: "Save" });
-    saveButton.on("click", () => {
-        drawing.saveCanvas("fagkveld", "jpg");
-    });
-
-    const freezeButton = savingFolder.addButton({
-        title: "Freeze/Thaw",
-    });
-
-    freezeButton.on("click", () => {
+    gui.add({"info":"Print by pressing 'E'"}, "info").name("Print").disable();
+    gui.add(params, "algo", algoSketches).name("Algorithm");
+    //Assuming 300 PPI print size
+    gui.add(params, "printSize", {
+        A0: {
+            width: 9920,
+            height: 7016,
+        },
+        A1: {
+            width: 7016,
+            height: 4960,
+        },
+        A2: {
+            width: 4960,
+            height: 3508,
+        },
+        A3: {
+            width: 3508,
+            height: 2480,
+        },
+        A4: {
+            width: 2480,
+            height: 1754,
+        },
+        A5: {
+            width: 1754,
+            height: 1240,
+        },
+        A6: {
+            width: 1240,
+            height: 877,
+        }
+    }).name("Print size");
+    gui.add(params, "scaleRatio", 1).name("Scale ratio").disable();
+    gui.add(params, "exportRatio", 1, 10, 1).name("Export ratio");
+    gui.add(params, "palette", palettes).name("Color palette");
+    
+    /*     freezeButton.on("click", () => {
         drawing.isLooping() ? drawing.noLoop() : drawing.loop();
     });
-
-    return defaultPane;
+ */
+    return gui;
 };
 
 export default () => {
@@ -97,8 +77,9 @@ export default () => {
                 gui.folders.forEach((folder) => folder.destroy());
                 params.algo.addFolder(gui);
             }
+            //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
             setGlobalParameters({ ...params, ...params?.algo?.parameters });
-            
+
             drawing.remove();
             drawing = new p5(params?.algo?.sketch);
         }

@@ -1,25 +1,14 @@
-const defaultParameters = {
-    canvasW: 620,
-    canvasH: 400,
-    palette: "none",
-    algo: "Fagkveld",
-};
-
 let globalParameters = {
-    canvasW: 620,
-    canvasH: 400,
-    palette: "none",
-    algo: "Fagkveld"
+    printSize: null,
+    scaleRatio: 1,
+    exportRatio: 4,
+    palette: "Velg én",
+    algo: "Velg én",
 };
 
-export const getGlobalParameters = () => {
-    return globalParameters;
-};
+export const getGlobalParameters = () => globalParameters;
 
 export const setGlobalParameters = (newParams) => {
     globalParameters = newParams;
 };
-
-export const getDefaultParameters = () => {
-    return { ...defaultParameters };
-};
+ 

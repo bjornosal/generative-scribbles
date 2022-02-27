@@ -1,8 +1,9 @@
+import { hexToRgb } from "../colorUtil.js";
 import { getGlobalParameters } from "../parameters";
 
-var y0, x1, y1, x2, y2;
+let y0, x1, y1, x2, y2;
 
-const drawSineWave = (p, width, height, modifier) => {
+const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWeight=5) => {
     for (let i = 0; i <= width; i++) {
         y0[i] = height / 2;
 
@@ -13,14 +14,17 @@ const drawSineWave = (p, width, height, modifier) => {
             y1[i] = y1[i - 1];
             x1[i] = x1[i - 1];
         }
-
-        p.stroke(`rgba(0, 0, 0, ${((1 / 450) * (width - x1[i] / 2)) / 5})`);
+        const { r, g, b } = hexToRgb(color);
+        buffer.strokeWeight(strokeWeight);
+        buffer.stroke(
+            `rgba(${r}, ${g}, ${b}, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
+        );
         const amplitude = (i / 10) * (modifier / 60);
 
         x2[i] = x1[i] + 1;
-        y2[i] = amplitude * p.sin(i / 10) + y0[i];
+        y2[i] = amplitude * buffer.sin(i / 10) + y0[i];
 
-        p.line(x1[i], y1[i], x2[i], y2[i]);
+        buffer.line(x1[i], y1[i], x2[i], y2[i]);
 
         x1[i] = x2[i];
         y1[i] = y2[i];
@@ -28,14 +32,39 @@ const drawSineWave = (p, width, height, modifier) => {
 };
 
 const sketch = (p) => {
-    let { canvasW, canvasH, palette, sinusAmount } = getGlobalParameters();
-    let width = canvasW ?? 640;
-    let height = canvasH ?? 400;
+    let {
+        printSize,
+        scaleRatio,
+        exportRatio,
+        palette,
+        sinusAmount,
+        sinusStrokeWeight,
+        sinusModifier
+    } = getGlobalParameters();
+    let buffer;
+    let canvas;
+    let printingSize = printSize ?? {
+        width: 3508,
+        height: 2480,
+    };
+    //No guarantee these values are set.
+    //Background is a string with hex value
+    //Colors is an array of strings with hex value
+    //Stroke is a hex value
+    //Size is an integer
+    //https://kgolid.github.io/chromotome-site/
+    let { background, colors, stroke, size } = palette;
+    //Setting background to a default white if no background exists.
+    background = background ? background : "#FFF";
 
     p.setup = () => {
-        p.createCanvas(width, height);
-        p.background("" + palette.background ?? "#FFF");
-
+        let w = printingSize.width / exportRatio;
+        let h = printingSize.height / exportRatio;
+        buffer = p.createGraphics(w, h);
+        canvas = p.createCanvas(w, h);
+        // Adjust according to screens pixel density.
+        exportRatio /= p.pixelDensity();
+        //Do your setup here ⬇️
         p.angleMode(p.RADIANS);
         p.noLoop();
 
@@ -47,21 +76,64 @@ const sketch = (p) => {
     };
 
     p.draw = () => {
-        // draw 50 sinusoidal waves
-        for (let modifier = 1; modifier < sinusAmount; modifier++) {
-            drawSineWave(p, width, height, modifier);
+        // Clear buffer each frame
+        buffer.clear();
+        // Transform (scale) all the drawings
+        buffer.scale(scaleRatio);
+        buffer.background(background);
+
+        //Draw here :) ⬇️
+
+        for (let modifier = 1; modifier < sinusAmount; modifier+=sinusModifier) {
+            drawSineWave(
+                buffer,
+                p.width,
+                p.height,
+                modifier,
+                colors ? p.random(colors) : "#000",
+                sinusStrokeWeight
+            );
+        }
+
+        //Stop drawing here ⬆️
+        // Draw buffer to canvas
+        p.image(buffer, 0, 0);
+    };
+
+    /**
+     * Exports the buffer to a high resolution image.
+     */
+    const exportHighResolution = () => {
+        scaleRatio = exportRatio;
+        // Re-create buffer with exportRatio and re-draw
+        buffer = p.createGraphics(scaleRatio * p.width, scaleRatio * p.height);
+        p.draw();
+        // Get timestamp to name the ouput file
+        let timestamp = new Date().getTime();
+        // Save as PNG
+        p.save(buffer, p.str(`${name}-${timestamp}`), "png");
+        // Reset scaleRation back to original, re-create buffer, re-draw
+        scaleRatio = 1;
+        buffer = p.createGraphics(p.width, p.height);
+        p.draw();
+    };
+
+    p.keyReleased = () => {
+        if (p.key == "e" || p.key == "E") {
+            exportHighResolution();
         }
     };
 };
 
-const name = "Sinus Wave"
-const parameters = {sinusAmount: 50}
+const name = "Sinus Wave";
+const parameters = { sinusAmount: 50, sinusStrokeWeight: 1, sinusModifier: 1 };
 
 const addFolder = (gui) => {
     const folder = gui.addFolder("Sinus Wave");
-    folder.add(parameters, "sinusAmount", 10, 400, 5);
+    folder.add(parameters, "sinusAmount", 10, 400, 5).name("Sinus waves");
+    folder.add(parameters, "sinusStrokeWeight", 1, 10, 1).name("Stroke weight");
+    folder.add(parameters, "sinusModifier", 1, 10, 1).name("Modifier incr.");
     return folder;
 };
 
 export { name, sketch, addFolder, parameters };
-
