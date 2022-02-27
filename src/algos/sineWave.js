@@ -3,7 +3,7 @@ import { getGlobalParameters } from "../parameters";
 
 let y0, x1, y1, x2, y2;
 
-const drawSineWave = (buffer, width, height, modifier, color="#000") => {
+const drawSineWave = (buffer, width, height, modifier, color = "#000", strokeWeight=5) => {
     for (let i = 0; i <= width; i++) {
         y0[i] = height / 2;
 
@@ -15,6 +15,7 @@ const drawSineWave = (buffer, width, height, modifier, color="#000") => {
             x1[i] = x1[i - 1];
         }
         const { r, g, b } = hexToRgb(color);
+        buffer.strokeWeight(strokeWeight);
         buffer.stroke(
             `rgba(${r}, ${g}, ${b}, ${((1 / 450) * (width - x1[i] / 2)) / 5})`
         );
@@ -37,6 +38,8 @@ const sketch = (p) => {
         exportRatio,
         palette,
         sinusAmount,
+        sinusStrokeWeight,
+        sinusModifier
     } = getGlobalParameters();
     let buffer;
     let canvas;
@@ -81,8 +84,15 @@ const sketch = (p) => {
 
         //Draw here :) ⬇️
 
-        for (let modifier = 1; modifier < sinusAmount; modifier++) {
-            drawSineWave(buffer, p.width, p.height, modifier, colors ? p.random(colors) : "#000");
+        for (let modifier = 1; modifier < sinusAmount; modifier+=sinusModifier) {
+            drawSineWave(
+                buffer,
+                p.width,
+                p.height,
+                modifier,
+                colors ? p.random(colors) : "#000",
+                sinusStrokeWeight
+            );
         }
 
         //Stop drawing here ⬆️
@@ -116,11 +126,13 @@ const sketch = (p) => {
 };
 
 const name = "Sinus Wave";
-const parameters = { sinusAmount: 50 };
+const parameters = { sinusAmount: 50, sinusStrokeWeight: 1, sinusModifier: 1 };
 
 const addFolder = (gui) => {
     const folder = gui.addFolder("Sinus Wave");
-    folder.add(parameters, "sinusAmount", 10, 400, 5);
+    folder.add(parameters, "sinusAmount", 10, 400, 5).name("Sinus waves");
+    folder.add(parameters, "sinusStrokeWeight", 1, 10, 1).name("Stroke weight");
+    folder.add(parameters, "sinusModifier", 1, 10, 1).name("Modifier incr.");
     return folder;
 };
 
