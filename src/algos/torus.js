@@ -1,8 +1,14 @@
 import { getGlobalParameters } from "../parameters";
 
-
 const sketch = (p) => {
-    let { printSize, scaleRatio, exportRatio, palette, torusAmount, randomStartingPoint } = getGlobalParameters();
+    let {
+        printSize,
+        scaleRatio,
+        exportRatio,
+        palette,
+        torusAmount,
+        randomStartingPoint,
+    } = getGlobalParameters();
     let printingSize = printSize ?? {
         width: 3508,
         height: 2480,
@@ -10,7 +16,15 @@ const sketch = (p) => {
 
     let canvas;
     let buffer;
-    let {background, colors, stroke, size} = palette;
+    //No guarantee these values are set.
+    //Background is a string with hex value
+    //Colors is an array of strings with hex value
+    //Stroke is a hex value
+    //Size is an integer
+    //https://kgolid.github.io/chromotome-site/
+    let { background, colors, stroke, size } = palette;
+    //Setting background to a default white if no background exists.
+    background = background ? background : "#FFF";
 
     const startingPoints = generateRandomStartingPoints(
         torusAmount,
@@ -18,7 +32,7 @@ const sketch = (p) => {
         printingSize.height,
         p
     );
-
+    let randomColor;
     p.setup = () => {
         let w = printingSize.width / exportRatio;
         let h = printingSize.height / exportRatio;
@@ -27,51 +41,53 @@ const sketch = (p) => {
         // Adjust according to screens pixel density.
         exportRatio /= p.pixelDensity();
         //Do your setup here ⬇️
-
-
+        randomColor = colors ? p.random(colors) : "red"
     };
 
     p.draw = () => {
-        p.background("" + palette.background ?? "#FFF");
+        p.background(background);
         // Clear buffer each frame
         buffer.clear();
         // Transform (scale) all the drawings
         buffer.scale(scaleRatio);
         //Draw here :) ⬇️
+        buffer.background(background);
 
-        p.pixelDensity(20)
-        p.stroke("purple");
-        p.noFill();
+        buffer.stroke(randomColor);
+        buffer.noFill();
 
         for (let i = 0; i < parameters.torusAmount; i++) {
             if (randomStartingPoint) {
                 let startingPoint = startingPoints[i];
                 drawTorus(startingPoint.x, startingPoint.y);
             } else {
-                drawTorus(0, 0);
+                drawTorus(0,0);
             }
         }
 
         //Stop drawing here ⬆️
         // Draw buffer to canvas
-        p.image(buffer, 0, 0);   
+        p.image(buffer, -p.width/2, -p.height/2);
     };
 
-
     const drawTorus = (x, y) => {
-        p.push();
-        p.translate(x, y);
-        p.rotateX(p.frameCount * 0.01);
-        p.rotateY(p.frameCount * 0.01);
+        buffer.push();
+        buffer.translate(x, y);
+        buffer.rotateX(p.frameCount * 0.01);
+        buffer.rotateY(p.frameCount * 0.01);
         const torusWidth = p.height / 8;
-        p.torus(torusWidth, torusWidth / 2);
-        p.pop();
+        buffer.torus(torusWidth, torusWidth / 2);
+        buffer.pop();
     };
 
     const exportHighResolution = () => {
         scaleRatio = exportRatio;
         // Re-create buffer with exportRatio and re-draw
-        buffer = p.createGraphics(scaleRatio * p.width, scaleRatio * p.height);
+        buffer = p.createGraphics(
+            scaleRatio * p.width,
+            scaleRatio * p.height,
+            p.WEBGL
+        );
         p.draw();
         // Get timestamp to name the ouput file
         let timestamp = new Date().getTime();
@@ -79,7 +95,7 @@ const sketch = (p) => {
         p.save(buffer, p.str(timestamp), "png");
         // Reset scaleRation back to original, re-create buffer, re-draw
         scaleRatio = 1;
-        buffer = p.createGraphics(p.width, p.height);
+        buffer = p.createGraphics(p.width, p.height, p.WEBGL);
         p.draw();
     };
 
