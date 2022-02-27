@@ -77,6 +77,7 @@ export default () => {
                 gui.folders.forEach((folder) => folder.destroy());
                 params.algo.addFolder(gui);
             }
+            //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
             setGlobalParameters({ ...params, ...params?.algo?.parameters });
 
             drawing.remove();
