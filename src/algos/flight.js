@@ -2,7 +2,7 @@ import { getGlobalParameters } from "../parameters";
 
 // These values needs to be changed.
 const name = "Flight";
-const parameters = { frameRate: 30 };
+const parameters = { frameRate: 10 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
     folder.add(parameters, "frameRate", 1, 200, 5).name("Frame rate");
@@ -33,8 +33,8 @@ const sketch = (p) => {
     //Setting background to a default white if no background exists.
     background = background ? background : "#FFF";
 
-    let startX = p.random(0, p.width / 100);
-    let startY = p.random(0, p.height / 100);
+    let startX = p.random(p.width / 3, p.width / 15);
+    let startY = p.random(p.width / 3, p.height / 15);
 
     p.setup = () => {
         defaultSetup();
@@ -50,12 +50,27 @@ const sketch = (p) => {
         //Draw here :) ⬇️
         buffer.strokeWeight(3);
         buffer.stroke(p.random(colors));
-        let newX = p.random(startX, startY + p.width / 5);
-        let newY = p.random(startY, startY + p.height / 10);
-        buffer.line(startX, startY, newX, newY);
-        startX = newX;
-        startY = newY;
 
+        let lines = p.random(1, 5);
+
+        let newX;
+        let newY;
+        for (let i = 0; i < lines; i++) {
+            newX = p.random(startX, p.width / 4);
+            newY = p.random(startY, startY + p.height / 4);
+            buffer.line(startX, startY, newX, newY);
+        }
+
+        let newShortX = p.random(startX, startY - p.width / 10);
+        let newShortY = p.random(startY, startY + p.height / 10);
+        buffer.line(startX, startY, newShortX, newShortY);
+
+        startX = newShortX;
+        startY = newShortY;
+
+        if (startX > p.width && startY > p.height) {
+            p.noLoop();
+        }
         //Stop drawing here ⬆️
         // Draw buffer to canvas
         p.image(buffer, 0, 0);
