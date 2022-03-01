@@ -48,8 +48,7 @@ const sketch = (p) => {
         // Clear buffer each frame
         defaultDraw();
         //Draw here :) ⬇️
-        buffer.noStroke();
-
+        buffer.strokeWeight(3);
         buffer.stroke(p.random(colors));
         let newX = p.random(startX, startY + p.width / 5);
         let newY = p.random(startY, startY + p.height / 10);
