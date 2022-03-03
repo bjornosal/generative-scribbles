@@ -4,6 +4,7 @@ import * as base from "./base";
 import * as particles from "./particles"; 
 import * as squares from "./squares"; 
 import * as flight from "./flight"; 
+import * as hexagon from "./hexagon"
 
 export default { 
   torus, 
@@ -11,5 +12,6 @@ export default {
   squares, 
   flight, 
   base,
-  particles 
+  particles, 
+  hexagon
 };
