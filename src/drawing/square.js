@@ -3,7 +3,6 @@ import { getGlobalParameters } from "../parameters";
 // These values needs to be changed.
 const name = "Square";
 const parameters = {
-    frameRate: 10,
     randomDraw: false,
     perRow: 50,
     strokeWeight: 0,
@@ -11,7 +10,6 @@ const parameters = {
 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
-    folder.add(parameters, "frameRate", 1, 1000, 10).name("Frame rate");
     folder.add(parameters, "perRow", 1, 200, 1).name("Per row");
     folder.add(parameters, "spacing", 0, 30, 1).name("Spacing");
     folder.add(parameters, "randomDraw", false).name("Draw randomly");
@@ -25,7 +23,6 @@ const sketch = (p) => {
         scaleRatio,
         exportRatio,
         palette,
-        frameRate,
         perRow,
         randomDraw,
         strokeWeight,
@@ -53,10 +50,10 @@ const sketch = (p) => {
     p.setup = () => {
         defaultSetup();
         //Do your setup here ⬇️
-        p.frameRate(frameRate);
         canvas.background(background);
         buffer.background(background);
-        moveToX = 0;
+        moveToX = spacing/2;
+        moveToY = spacing/2;
         squareSize = (p.width/perRow)-spacing
     };
 
@@ -85,7 +82,7 @@ const sketch = (p) => {
             moveToX += spacing;
 
             if (moveToX > p.width) {
-                moveToX = 0;
+                moveToX = spacing/2;
                 moveToY += squareSize;
                 moveToY += strokeWeight;
                 moveToY += spacing;
