@@ -5,14 +5,14 @@ const name = "Square";
 const parameters = {
     frameRate: 10,
     randomDraw: false,
-    squareSize: 50,
+    perRow: 50,
     strokeWeight: 0,
     spacing: 0,
 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
     folder.add(parameters, "frameRate", 1, 1000, 10).name("Frame rate");
-    folder.add(parameters, "squareSize", 1, 200, 1).name("Square size");
+    folder.add(parameters, "perRow", 1, 200, 1).name("Per row");
     folder.add(parameters, "spacing", 0, 30, 1).name("Spacing");
     folder.add(parameters, "randomDraw", false).name("Draw randomly");
     folder.add(parameters, "strokeWeight", 0, 50, 1).name("Stroke weight");
@@ -26,7 +26,7 @@ const sketch = (p) => {
         exportRatio,
         palette,
         frameRate,
-        squareSize,
+        perRow,
         randomDraw,
         strokeWeight,
         spacing,
@@ -49,7 +49,7 @@ const sketch = (p) => {
 
     let moveToX = 0;
     let moveToY = 0;
-
+    let squareSize;
     p.setup = () => {
         defaultSetup();
         //Do your setup here ⬇️
@@ -57,6 +57,7 @@ const sketch = (p) => {
         canvas.background(background);
         buffer.background(background);
         moveToX = 0;
+        squareSize = (p.width/perRow)-spacing
     };
 
     p.draw = () => {

@@ -121,9 +121,10 @@ const main = () => {
         const drawingOption = gui.children.find(
             (child) => child.property === "algo"
         );
-        const defaultAlgo = Object.values(drawings).find(
+        let defaultAlgo = Object.values(drawings).find(
             (drawing) => drawing.name === chosenAlgo
         );
+        defaultAlgo = defaultAlgo || Object.values(drawings)[0];
         drawingOption.setValue(defaultAlgo);
         const palette = gui.children.find(
             (child) => child.property === "palette"
@@ -133,12 +134,12 @@ const main = () => {
 
         document.body.style.backgroundColor = defaultColor.background ?? "#FFF";
         gui.folders.forEach((folder) => folder.destroy());
-        params.algo.addFolder(gui);
+        defaultAlgo?.addFolder(gui);
         //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
         setGlobalParameters({ ...params, ...params?.algo?.parameters });
 
         drawing?.remove();
-        drawing = new p5(defaultAlgo.sketch);
+        drawing = new p5(defaultAlgo?.sketch);
     }
 };
 
