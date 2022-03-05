@@ -1,7 +1,7 @@
 import { getGlobalParameters } from "../parameters";
 
 // These values needs to be changed.
-const name = "Squares";
+const name = "Shapes";
 const parameters = { frameRate: 30 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
