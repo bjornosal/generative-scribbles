@@ -1,21 +1,22 @@
 import * as tome from "chromotome";
 import { getGlobalParameters, setGlobalParameters } from "./parameters";
 import p5 from "p5";
-import algos from "./algos";
-import { sketch as defaultSketch } from "./algos/square";
+import drawings from "./drawing";
 import GUI from "lil-gui";
 
-let drawing = new p5(defaultSketch);
+let drawing;
 
 const createGui = (params) => {
     const gui = new GUI();
-    const algoSketches = Object.values(algos).reduce(
-        (all, algo) => ({
-            ...all,
-            [algo?.name ?? "Ukjent"]: algo,
-        }),
-        {}
-    );
+    const sketches = Object.values(drawings)
+        .sort((a, b) => (a?.name > b?.name ? 1 : -1))
+        .reduce(
+            (all, drawing) => ({
+                ...all,
+                [drawing?.name ?? "Ukjent"]: drawing,
+            }),
+            {}
+        );
 
     const palettes = tome.getAll().reduce((map, palette) => {
         map[palette.name] = palette;
@@ -23,7 +24,7 @@ const createGui = (params) => {
     }, {});
 
     gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
-    gui.add(params, "algo", algoSketches).name("Algorithm");
+    gui.add(params, "algo", sketches).name("Drawing");
     //Assuming 300 PPI print size
     gui.add(params, "printSize", {
         A0: {
@@ -57,7 +58,7 @@ const createGui = (params) => {
     }).name("Print size");
     gui.add(params, "scaleRatio", 1).name("Scale ratio").disable();
     gui.add(params, "exportRatio", 1, 10, 1).name("Export ratio");
-    gui.add(params, "palette", palettes).name("Color palette");
+    gui.add(params, "palette", palettes).name("Color palette").listen();
 
     /*     freezeButton.on("click", () => {
         drawing.isLooping() ? drawing.noLoop() : drawing.loop();
@@ -80,10 +81,35 @@ const main = () => {
             //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
             setGlobalParameters({ ...params, ...params?.algo?.parameters });
 
-            drawing.remove();
+            drawing?.remove();
             drawing = new p5(params?.algo?.sketch);
         }
     });
+
+    if (!params?.algo?.sketch) {
+
+        const drawingOption = gui.children.find(
+            (child) => child.property === "algo"
+        );
+        const palette = gui.children.find(
+            (child) => child.property === "palette"
+        );
+
+        const defaultAlgo = Object.values(drawings)[0];
+        const defaultColor = tome.getRandom()
+        drawingOption.setValue(defaultAlgo);
+        palette.setValue(defaultColor);
+
+        document.body.style.backgroundColor =
+        defaultColor.background ?? "#FFF";
+        gui.folders.forEach((folder) => folder.destroy());
+        params.algo.addFolder(gui);
+        //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
+        setGlobalParameters({ ...params, ...params?.algo?.parameters });
+
+        drawing?.remove();
+        drawing = new p5(defaultAlgo.sketch);
+    }
 };
 
 main();
