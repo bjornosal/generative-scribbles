@@ -26,6 +26,7 @@ const createGui = (params) => {
     gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
     gui.add(params, "algo", sketches).name("Drawing");
     //Assuming 300 PPI print size
+    gui.add(params, "direction", ["Landscape", "Portrait"]).name("Direction");
     gui.add(params, "printSize", {
         A0: {
             width: 9920,
@@ -78,8 +79,22 @@ const main = () => {
                 gui.folders.forEach((folder) => folder.destroy());
                 params.algo.addFolder(gui);
             }
+            let printSize = params.printSize;
+            if (
+                (event.property === "direction" &&
+                    event.value === "Portrait") ||
+                (event.property !== "direction" &&
+                    params.direction === "Portrait")
+            ) {
+                printSize =
+                    { height: printSize.width, width: printSize.height };
+            }
             //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
-            setGlobalParameters({ ...params, ...params?.algo?.parameters });
+            setGlobalParameters({
+                ...params,
+                ...params?.algo?.parameters,
+                printSize,
+            });
 
             drawing?.remove();
             drawing = new p5(params?.algo?.sketch);
@@ -87,21 +102,26 @@ const main = () => {
     });
 
     if (!params?.algo?.sketch) {
-
         const drawingOption = gui.children.find(
             (child) => child.property === "algo"
         );
         const palette = gui.children.find(
             (child) => child.property === "palette"
         );
+        const printSize = gui.children.find(
+            (child) => child.property === "printSize"
+        );
 
+        printSize.setValue({
+            width: 2480,
+            height: 1754,
+        });
         const defaultAlgo = Object.values(drawings)[0];
-        const defaultColor = tome.getRandom()
+        const defaultColor = tome.getRandom();
         drawingOption.setValue(defaultAlgo);
         palette.setValue(defaultColor);
 
-        document.body.style.backgroundColor =
-        defaultColor.background ?? "#FFF";
+        document.body.style.backgroundColor = defaultColor.background ?? "#FFF";
         gui.folders.forEach((folder) => folder.destroy());
         params.algo.addFolder(gui);
         //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
