@@ -3,6 +3,7 @@ import htmlTemplate from "rollup-plugin-generate-html-template";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import { terser } from "rollup-plugin-terser";
+import copy from "rollup-plugin-copy-assets";
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -23,6 +24,14 @@ export default {
         htmlTemplate({
             template: "src/template.html",
             target: "dist/index.html",
+        }),
+        copy({
+            assets: [
+                // You can include directories
+                "src/assets",
+                // You can also include files
+                "src/external/buffer.bin",
+            ],
         }),
         resolve(), // tells Rollup how to find stuff in node_modules
         commonjs(), // converts date-fns to ES modules
