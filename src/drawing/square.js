@@ -7,11 +7,13 @@ const parameters = {
     randomDraw: false,
     squareSize: 50,
     strokeWeight: 0,
+    spacing: 0,
 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
     folder.add(parameters, "frameRate", 1, 1000, 10).name("Frame rate");
     folder.add(parameters, "squareSize", 1, 200, 1).name("Square size");
+    folder.add(parameters, "spacing", 0, 30, 1).name("Spacing");
     folder.add(parameters, "randomDraw", false).name("Draw randomly");
     folder.add(parameters, "strokeWeight", 0, 50, 1).name("Stroke weight");
     return folder;
@@ -27,6 +29,7 @@ const sketch = (p) => {
         squareSize,
         randomDraw,
         strokeWeight,
+        spacing,
     } = getGlobalParameters();
     let buffer;
     let canvas;
@@ -58,37 +61,43 @@ const sketch = (p) => {
 
     p.draw = () => {
         // Clear buffer each frame
-        defaultDraw();
-        //Draw here :) ⬇️
-        buffer.noStroke();
-        if (strokeWeight !== 0) {
-            buffer.strokeWeight(strokeWeight);
-            buffer.stroke(p.random(colors));
-        }
-        buffer.push();
-        buffer.fill(p.random(colors));
-        buffer.translate(moveToX, moveToY);
+        while (moveToY < p.height) {
+            defaultDraw();
+            //Draw here :) ⬇️
+            buffer.noStroke();
+            if (strokeWeight !== 0) {
+                buffer.strokeWeight(strokeWeight);
+                buffer.stroke(p.random(colors));
+            }
+            buffer.push();
+            buffer.fill(p.random(colors));
+            buffer.translate(moveToX, moveToY);
 
-        if (randomDraw) {
-            Number(p.random(0, 1).toFixed(0)) == 1 &&
+            if (randomDraw) {
+                Number(p.random(0, 1).toFixed(0)) == 1 &&
+                    buffer.square(0, 0, squareSize);
+            } else {
                 buffer.square(0, 0, squareSize);
-        } else {
-            buffer.square(0, 0, squareSize);
-        }
-        moveToX += squareSize;
-        moveToX += strokeWeight;
+            }
+            moveToX += squareSize;
+            moveToX += strokeWeight;
+            moveToX += spacing;
 
-        if (moveToX > p.width) {
-            moveToX = 0;
-            moveToY += squareSize;
-            moveToY += strokeWeight;
+            if (moveToX > p.width) {
+                moveToX = 0;
+                moveToY += squareSize;
+                moveToY += strokeWeight;
+                moveToY += spacing;
+            }
+            if (moveToY > p.height) {
+                p.noLoop();
+            }
+            buffer.pop();
+        
+            //Stop drawing here ⬆️
+            // Draw buffer to canvas
+            p.image(buffer, 0, 0);
         }
-        if (moveToY > p.height) {
-            p.noLoop();
-        }
-        buffer.pop();
-        //Stop drawing here ⬆️
-        // Draw buffer to canvas
         p.image(buffer, 0, 0);
     };
 
