@@ -50,7 +50,7 @@ const sketch = (p) => {
         buffer.fill(p.random(colors));
 
         let randomX = p.random(-p.width / 4, p.width);
-        let randomY = p.random(-p.width / 4, p.width);
+        let randomY = p.random(-p.height / 4, p.height);
 
         let drawing = p.random(1, 2);
         drawing = Number(drawing.toFixed(0));
@@ -69,13 +69,11 @@ const sketch = (p) => {
                 buffer.rotate(p.random([45, 90, 135, 180]));
                 buffer.triangle(
                     0,
-                    //randomTriangleX,
                     100,
-                    //randomTriangleY,
-                    75, //x høyre
-                    100, //y høyre
-                    75, // x toppen
-                    25 //y toppen
+                    75, 
+                    100, 
+                    75, 
+                    25 
                 );
 
                 buffer.pop();
