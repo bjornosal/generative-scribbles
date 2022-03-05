@@ -71,6 +71,7 @@ const createGui = (params) => {
 const main = () => {
     let params = getGlobalParameters();
     let gui = createGui(params);
+    const chosenAlgo = JSON.parse(localStorage.getItem("algo"));
     gui.onFinishChange((event) => {
         document.body.style.backgroundColor =
             params?.palette?.background ?? "#FFF";
@@ -78,6 +79,10 @@ const main = () => {
             if (event.property === "algo") {
                 gui.folders.forEach((folder) => folder.destroy());
                 params.algo.addFolder(gui);
+                localStorage.setItem(
+                    "algo",
+                    JSON.stringify(params?.algo?.name)
+                );
             }
             let printSize = params.printSize;
             if (
@@ -86,8 +91,10 @@ const main = () => {
                 (event.property !== "direction" &&
                     params.direction === "Portrait")
             ) {
-                printSize =
-                    { height: printSize.width, width: printSize.height };
+                printSize = {
+                    height: printSize.width,
+                    width: printSize.height,
+                };
             }
             //Adds parameters from the algorithm to the global parameters, making the changed values accesible.
             setGlobalParameters({
@@ -102,12 +109,6 @@ const main = () => {
     });
 
     if (!params?.algo?.sketch) {
-        const drawingOption = gui.children.find(
-            (child) => child.property === "algo"
-        );
-        const palette = gui.children.find(
-            (child) => child.property === "palette"
-        );
         const printSize = gui.children.find(
             (child) => child.property === "printSize"
         );
@@ -116,9 +117,18 @@ const main = () => {
             width: 2480,
             height: 1754,
         });
-        const defaultAlgo = Object.values(drawings)[0];
-        const defaultColor = tome.getRandom();
+
+        const drawingOption = gui.children.find(
+            (child) => child.property === "algo"
+        );
+        const defaultAlgo = Object.values(drawings).find(
+            (drawing) => drawing.name === chosenAlgo
+        );
         drawingOption.setValue(defaultAlgo);
+        const palette = gui.children.find(
+            (child) => child.property === "palette"
+        );
+        const defaultColor = tome.getRandom();
         palette.setValue(defaultColor);
 
         document.body.style.backgroundColor = defaultColor.background ?? "#FFF";
