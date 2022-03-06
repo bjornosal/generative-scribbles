@@ -2,12 +2,14 @@ import { getGlobalParameters } from "../parameters";
 
 const name = "Sphere";
 
-const parameters = { amount: 1, randomStartingPoint: false };
+const parameters = { amount: 1, randomStartingPoint: false, spheres: 0, torusWidth: 100 };
 
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
+    folder.add(parameters, "torusWidth", 10, 300, 10).name("Size");
     folder.add(parameters, "amount", 1, 10, 1).name("Amount");
     folder.add(parameters, "randomStartingPoint").name("Random starting point");
+    folder.add(parameters, "spheres", 0, 5, 1).name("Inner spheres");
     return folder;
 };
 
@@ -19,6 +21,8 @@ const sketch = (p) => {
         exportRatio,
         palette,
         amount,
+        spheres,
+        torusWidth,
         randomStartingPoint,
     } = getGlobalParameters();
     let printingSize = printSize ?? {
@@ -87,14 +91,16 @@ const sketch = (p) => {
         buffer.translate(x, y);
         buffer.rotateX(p.frameCount * 0.01);
         buffer.rotateY(p.frameCount * 0.01);
-        const torusWidth = p.height / 4;
         // buffer.ambientLight("green");
         //  buffer.ambientMaterial(250);
+        let divideBy = 1.2;
         buffer.sphere(torusWidth);
-        buffer.stroke(colors[0]);
-        buffer.sphere(torusWidth / 2);
-        buffer.stroke(colors[1]);
-        buffer.sphere(torusWidth / 6);
+        for (let i = 0; i < spheres; i++) {
+            buffer.stroke(colors[i] ? colors[i] : p.random(colors));
+            buffer.sphere(torusWidth / divideBy);
+            divideBy += .5;
+        }
+
         buffer.pop();
         buffer.stroke(randomColor);
     };
