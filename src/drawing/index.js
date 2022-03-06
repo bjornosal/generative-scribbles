@@ -7,11 +7,13 @@ import * as sphere from "./sphere";
 import * as flight from "./flight";
 import * as hexagon from "./hexagon";
 import * as square from "./square";
+import * as lines from "./lines";
 
 export default {
     square,
     torus,
     sineWave,
+    lines,
     sphere,
     shapes,
     flight,
