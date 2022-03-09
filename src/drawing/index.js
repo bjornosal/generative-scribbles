@@ -8,6 +8,7 @@ import * as flight from "./flight";
 import * as hexagon from "./hexagon";
 import * as square from "./square";
 import * as lines from "./lines";
+import * as start from "./start";
 
 export default {
     square,
@@ -20,4 +21,5 @@ export default {
     base,
     particles,
     hexagon,
+    start,
 };
