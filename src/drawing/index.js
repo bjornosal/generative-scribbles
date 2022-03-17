@@ -9,6 +9,8 @@ import * as hexagon from "./hexagon";
 import * as square from "./square";
 import * as lines from "./lines";
 import * as start from "./start";
+import * as fagkveld from "./fagkveld";
+import * as cube from "./cube";
 
 export default {
     square,
@@ -22,4 +24,6 @@ export default {
     particles,
     hexagon,
     start,
+    fagkveld,
+    cube,
 };

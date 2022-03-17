@@ -1,8 +1,13 @@
 import { getGlobalParameters } from "../parameters";
 
-const name = "Sphere";
+const name = "Cube";
 
-const parameters = { amount: 1, randomStartingPoint: false, spheres: 0, torusWidth: 100 };
+const parameters = {
+    amount: 1,
+    randomStartingPoint: false,
+    spheres: 0,
+    torusWidth: 100,
+};
 
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
@@ -43,20 +48,10 @@ const sketch = (p) => {
     //Setting background to a default white if no background exists.
     background = background ? background : "#FFF";
 
-    let startingPoints;
-    let randomColor;
-
     p.setup = () => {
         defaultSetup();
         //Do your setup here ⬇️
-        randomColor = colors ? p.random(colors) : "red";
-        buffer.strokeWeight(1)
-        startingPoints = generateRandomStartingPoints(
-            amount,
-            p.width,
-            p.height,
-            p
-        );
+        p.noLoop();
     };
 
     p.draw = () => {
@@ -65,61 +60,18 @@ const sketch = (p) => {
         //Add background color on drawing.
         buffer.background(background);
         //Add color to everything being drawn from here on out.
-        buffer.stroke(randomColor);
-        buffer.noFill();
 
-        for (let i = 0; i < parameters.amount; i++) {
-            if (randomStartingPoint) {
-                let startingPoint = startingPoints[i];
-                drawSphere(startingPoint.x, startingPoint.y);
-            } else {
-                drawSphere(0, 0);
-            }
-        }
-
+        buffer.fill(p.random(colors));
+        buffer.stroke(stroke ? stroke : "#000");
+        buffer.rotateX(-40);
+        buffer.rotateY(-100);
+        let startX = p.width / 2;
+        let startY = p.height / 3;
+        buffer.box(startX, startY, 50);
+        buffer.fill(p.random(colors))
+        buffer.box(startX-20, startY-20, 60);
         //Stop drawing here ⬆️
         p.image(buffer, -p.width / 2, -p.height / 2);
-    };
-
-    const drawSphere = (x, y) => {
-        let locX = p.mouseX - p.height / 2;
-        let locY = p.mouseY - p.width / 2;
-
-        buffer.ambientLight(50);
-        buffer.directionalLight(255, 0, 0, 0.25, 0.25, 0);
-        buffer.pointLight(0, 0, 255, locX, locY, 250);
-        buffer.push();
-        buffer.translate(x, y);
-        buffer.rotateX(p.frameCount * 0.01);
-        buffer.rotateY(p.frameCount * 0.01);
-        // buffer.ambientLight("green");
-        //  buffer.ambientMaterial(250);
-        let divideBy = 1.2;
-        buffer.sphere(torusWidth);
-        for (let i = 0; i < spheres; i++) {
-            buffer.stroke(colors[i] ? colors[i] : p.random(colors));
-            buffer.sphere(torusWidth / divideBy);
-            divideBy += .5;
-        }
-
-        buffer.pop();
-        buffer.stroke(randomColor);
-    };
-
-    const generateRandomStartingPoints = (amount, width, height, p) => {
-        const startingPoints = [];
-
-        for (let i = 0; i < amount; i++) {
-            let randomX = p.random(-width / 3, width / 3);
-            let randomY = p.random(-height / 3, height / 3);
-
-            let x = parseInt(randomX);
-            let y = parseInt(randomY);
-
-            startingPoints.push({ x, y });
-        }
-
-        return startingPoints;
     };
 
     /*

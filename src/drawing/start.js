@@ -63,7 +63,7 @@ const sketch = (p) => {
         buffer.noStroke();
         while (currentY < p.height - paddingY) {
             while (currentX < p.width - paddingX) {
-                let drawing = p.random(1, 3);
+                let drawing = p.random(1, 4);
                 drawing = Number(drawing.toFixed(0));
                 buffer.fill(p.random(colors));
                 switch (drawing) {
@@ -114,9 +114,6 @@ const sketch = (p) => {
             currentY = currentY + itemSize;
         }
 
-        if (currentY > p.height) {
-            p.noLoop();
-        }
         //Stop drawing here ⬆️
         // Draw buffer to canvas
         p.image(buffer, 0, 0);
