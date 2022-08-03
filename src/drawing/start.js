@@ -2,11 +2,12 @@ import { getGlobalParameters } from "../parameters";
 
 // These values needs to be changed.
 const name = "Start";
-const parameters = { paddingX: 0, paddingY: 0, itemsPerRow: 10 };
+const parameters = { paddingX: 0, paddingY: 0, itemsPerRow: 10, spacing: 0 };
 const addFolder = (gui) => {
     const folder = gui.addFolder(name);
     folder.add(parameters, "paddingX", 0, 200, 5).name("Padding X"); //percentage?
     folder.add(parameters, "paddingY", 0, 200, 5).name("Padding Y");
+    folder.add(parameters, "spacing", 0, 200, 5).name("Spacing");
     folder
         .add(parameters, "itemsPerRow", 1, 100, 1)
         .name("Number of items per row");
@@ -21,7 +22,8 @@ const sketch = (p) => {
         palette,
         paddingX,
         paddingY,
-     itemsPerRow,
+        spacing,
+        itemsPerRow,
     } = getGlobalParameters();
     let buffer;
     let canvas;
@@ -108,10 +110,10 @@ const sketch = (p) => {
                         console.log("default: " + drawing);
                         break;
                 }
-                currentX = currentX + itemSize;
+                currentX = currentX + itemSize + spacing;
             }
             currentX = startX;
-            currentY = currentY + itemSize;
+            currentY = currentY + itemSize + spacing;
         }
 
         if (currentY > p.height) {
