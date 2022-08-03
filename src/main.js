@@ -24,6 +24,16 @@ const createGui = (params) => {
     }, {});
 
     gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
+    gui.add(
+        {
+            openColorPalette: () => {
+                window
+                    .open("https://kgolid.github.io/chromotome-site/", "_blank")
+                    .focus();
+            },
+        },
+        "openColorPalette"
+    ).name("Open color palettes");
     gui.add(params, "algo", sketches).name("Drawing");
     //Assuming 300 PPI print size
     gui.add(params, "direction", ["Landscape", "Portrait"]).name("Direction");
