@@ -18,10 +18,16 @@ const createGui = (params) => {
             {}
         );
 
-    const palettes = tome.getAll().reduce((map, palette) => {
-        map[palette.name] = palette;
+   const palettes = {}
+    /*  tome.getAll().reduce((map, palette) => {
+      map[palette.name] = palette;
         return map;
-    }, {});
+    }, {});*/
+
+    palettes["Lene1"] = { background: "#FFF", colors: ["#4C6037", "#527D91", "#C0B297", "#C89D9F", "#97939A", "#A5734C"] };
+    palettes["Lene2"] = { background: "#FFF", colors: ["#DCD391", "#98B0B8", "#C0B297", "#C89D9F", "#97939A", "#A5734C"] };
+    palettes["Lene3"] = { background: "#FFF", colors: ["#62b6cb", "#8db859", "#FFBE54"] };
+    palettes["Beiglene"] = { background: "#FFF", colors: ["#EEE4B5", "#ABA680", "#A6c186", "#19535F"] };
 
     gui.add({ info: "Save by pressing 'E'" }, "info").name("Save").disable();
     gui.add(
